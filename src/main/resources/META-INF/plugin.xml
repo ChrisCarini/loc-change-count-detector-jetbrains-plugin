@@ -1,0 +1,16 @@
+<idea-plugin>
+  <id>com.chriscarini.jetbrains.loc-change-count-detector-jetbrains-plugin</id>
+  <name>LoC Change Count Detector</name>
+  <vendor email="jetbrains@chriscarini.com" url="https://jetbrains.chriscarini.com">Chris Carini</vendor>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <statusBarWidgetFactory id="VCSFileChangeCountStatus"
+                            implementation="com.chriscarini.jetbrains.locchangecountdetector.VCSFileChangeCountWidgetFactory"
+                            order="after positionWidget"/>
+  </extensions>
+
+</idea-plugin>
