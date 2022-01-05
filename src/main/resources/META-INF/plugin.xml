@@ -8,8 +8,10 @@
   <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <statusBarWidgetFactory id="VCSFileChangeCountStatus"
-                            implementation="com.chriscarini.jetbrains.locchangecountdetector.VCSFileChangeCountWidgetFactory"
+    <projectService
+        serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
+    <statusBarWidgetFactory id="LoCCounter"
+                            implementation="com.chriscarini.jetbrains.locchangecountdetector.LOCPerCommitWidgetFactory"
                             order="after positionWidget"/>
   </extensions>
 

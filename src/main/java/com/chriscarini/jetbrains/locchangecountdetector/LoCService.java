@@ -1,10 +1,10 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
 import com.intellij.concurrency.JobScheduler;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -12,28 +12,32 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class LoCService {
 
-    int loc = 0;
-    String files = "";
+    private Integer loc = 0;
+    private String files = "no";
 
-    private ScheduledFuture checkConnectionStatusClearJob;
+    private final Project project;
 
-    public static LoCService getInstance() {
-        return ApplicationManager.getApplication().getService(LoCService.class);
+    private final ScheduledFuture checkConnectionStatusClearJob;
+
+    public static LoCService getInstance(@NotNull final Project project) {
+        return project.getService(LoCService.class);
     }
 
-    public LoCService() {
+    public LoCService(@NotNull final Project project) {
+        this.project = project;
         this.checkConnectionStatusClearJob = JobScheduler.getScheduler()
                 .schedule(() -> this.computeLoCInfo(), 10, TimeUnit.SECONDS);
     }
 
     public void computeLoCInfo() {
         ProgressManager.getInstance()
-                .run(new Task.Backgroundable(null, "My background thing") {
+                .run(new Task.Backgroundable(this.project, "My background thing") {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
                         //Sulabh's logic for git commands
@@ -43,7 +47,6 @@ public class LoCService {
                         String headCommit = "";
 
                         try {
-
                             Process process = processBuilder1.start();
                             StringBuilder output = new StringBuilder();
                             BufferedReader reader = new BufferedReader(
@@ -67,9 +70,7 @@ public class LoCService {
                 //abnormal...
             }*/
                             //Messages.showInfoMessage("Commit", output.toString());
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        } catch (InterruptedException ex) {
+                        } catch (IOException | InterruptedException ex) {
                             ex.printStackTrace();
                         }
 
@@ -117,42 +118,42 @@ public class LoCService {
                             double reviewHoursXL = 45000/3600;
                             double reviewTime = 0;
 
-                            if (loc >100 && loc <=500){
+                            if (loc > 100 && loc <= 500) {
                                 reviewTime = reviewHoursL;
-                            }else if (loc > 15 && loc <= 100){
+                            } else if (loc > 15 && loc <= 100) {
                                 reviewTime = reviewHoursM;
-                            }else if(loc >=0 && loc <=15) {
+                            } else if (loc >= 0 && loc <= 15) {
                                 reviewTime = reviewHoursS;
                             } else {
                                 reviewTime = reviewHoursXL;
                             }
                             //Messages.showInfoMessage("Lines Counter", "You have " + loc + " LoC currently in " + filesChanged + " files. On average, it will take about " + reviewTime + " business hours to get this change reviewed!!");
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        } catch (InterruptedException ex) {
+                        } catch (IOException | InterruptedException ex) {
                             ex.printStackTrace();
                         }
 
-                        LoCService.getInstance().setFiles(filesChanged);
-                        LoCService.getInstance().setLoc(loc);
+                        LoCService.getInstance(myProject).setFiles(filesChanged);
+                        LoCService.getInstance(myProject).setLoc(loc);
                     }
                 });
 
     }
 
+    @NotNull
     public Integer getChangeCount() {
-        return loc;
+        return Objects.requireNonNullElse(loc, 0);
     }
 
+    @NotNull
     public String getFileCount() {
-        return files;
+        return Objects.requireNonNullElse(files, "no");
     }
 
-    public void setLoc(int loc) {
+    public void setLoc(@NotNull final Integer loc) {
         this.loc = loc;
     }
 
-    public void setFiles(String files) {
+    public void setFiles(@NotNull final String files) {
         this.files = files;
     }
 }
