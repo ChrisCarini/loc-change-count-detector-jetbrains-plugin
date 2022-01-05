@@ -1,6 +1,7 @@
 *.iml
 *.ipr
 *.iws
+.idea/
 .gradle/
 .qodana/
 build/
