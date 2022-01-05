@@ -1,6 +1,8 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.StatusBarWidgetFactory;
@@ -22,7 +24,7 @@ public class LOCPerCommitWidgetFactory implements StatusBarWidgetFactory {
 
     @Override
     public boolean isAvailable(@NotNull Project project) {
-        return true;
+        return ProjectLevelVcsManager.getInstance(project).hasActiveVcss();
     }
 
     @Override
@@ -32,7 +34,7 @@ public class LOCPerCommitWidgetFactory implements StatusBarWidgetFactory {
 
     @Override
     public void disposeWidget(@NotNull StatusBarWidget widget) {
-
+        Disposer.dispose(widget);
     }
 
     @Override
