@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 // 1: Point of action: background job?
 // 2: Analysis on change size Vs review time.
@@ -32,7 +34,7 @@ import java.awt.event.MouseEvent;
 // 8: Add tooltip to the status bar showing the comment for review time.
 
 public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation,
-        BulkAwareDocumentListener.Simple, CaretListener, SelectionListener {
+        BulkAwareDocumentListener.Simple, CaretListener, SelectionListener, PropertyChangeListener {
 
     public static final String ID = "LoCCounter";
 
@@ -99,6 +101,10 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         this.updateChangeText();
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent e) {
+        this.updateChangeText();
+    }
 
     private void updateChangeText() {
         myQueue.queue(Update.create(this, () -> {
