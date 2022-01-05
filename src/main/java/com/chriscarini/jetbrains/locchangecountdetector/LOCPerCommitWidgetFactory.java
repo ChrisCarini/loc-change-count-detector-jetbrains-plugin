@@ -37,7 +37,7 @@ public class LOCPerCommitWidgetFactory implements StatusBarWidgetFactory {
 
     @Override
     public @NotNull StatusBarWidget createWidget(@NotNull Project project) {
-        return new LOCCountWidgetText();
+        return new LOCCountWidgetText(project);
     }
 
     @Override
@@ -51,5 +51,4 @@ public class LOCPerCommitWidgetFactory implements StatusBarWidgetFactory {
     }
 
 }
-
 
