@@ -14,9 +14,6 @@
     <statusBarWidgetFactory id="LoCCounter"
                             implementation="com.chriscarini.jetbrains.locchangecountdetector.LOCPerCommitWidgetFactory"
                             order="after positionWidget"/>
-    <!--    <statusBarWidgetFactory id="VCSFileChangeCountStatus"-->
-    <!--                            implementation="com.chriscarini.jetbrains.locchangecountdetector.VCSFileChangeCountWidgetFactory"-->
-    <!--                            order="after positionWidget"/>-->
   </extensions>
 
 </idea-plugin>
