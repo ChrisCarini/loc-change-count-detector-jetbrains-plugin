@@ -8,30 +8,15 @@
   <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <!--
-    So here is where i'm registering that java class to hook into the extension point to show the icon
 
-    awkward, as the icon is not showing lol
-
-    it should be in bottom right corner, 1 sec
-
-    well, it will just show either blue info icon, or yellow warning icon
-
-
-
-    whatcha mean?
-
-    oh oh! ok yeah, i show
-
-    yeah, so it's kinda clunky, but all these things registered in the IDE have some "ID", so what I did was open the IJ community edition code base and look to see what an ID of something was i could latch onto. position widget is easy one
-
-
-
-    yup! status bar
-    -->
-    <statusBarWidgetFactory id="VCSFileChangeCountStatus"
-                            implementation="com.chriscarini.jetbrains.locchangecountdetector.VCSFileChangeCountWidgetFactory"
+    <projectService
+        serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
+    <statusBarWidgetFactory id="LoCCounter"
+                            implementation="com.chriscarini.jetbrains.locchangecountdetector.LOCPerCommitWidgetFactory"
                             order="after positionWidget"/>
+    <!--    <statusBarWidgetFactory id="VCSFileChangeCountStatus"-->
+    <!--                            implementation="com.chriscarini.jetbrains.locchangecountdetector.VCSFileChangeCountWidgetFactory"-->
+    <!--                            order="after positionWidget"/>-->
   </extensions>
 
 </idea-plugin>

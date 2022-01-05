@@ -1,4 +1,4 @@
-package actions;
+package com.chriscarini.jetbrains.locchangecountdetector;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
@@ -10,11 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 // 1: Point of action: background job?
 // 2: Analysis on change size Vs review time.
@@ -33,6 +28,7 @@ public class LOCCountWidgetText implements StatusBarWidget, StatusBarWidget.Text
     public LOCCountWidgetText(@NotNull Project project) {
         this.project = project;
     }
+
     @Override
     public @NonNls @NotNull String ID() {
         return ID;
@@ -50,7 +46,7 @@ public class LOCCountWidgetText implements StatusBarWidget, StatusBarWidget.Text
 
     @Override
     public @NotNull @NlsContexts.Label String getText() {
-        LoCService myService = LoCService.getInstance();
+        LoCService myService = LoCService.getInstance(project);
         return String.format("%d lines of code changed; %s files changed", myService.getChangeCount(), myService.getFileCount());
     }
 
