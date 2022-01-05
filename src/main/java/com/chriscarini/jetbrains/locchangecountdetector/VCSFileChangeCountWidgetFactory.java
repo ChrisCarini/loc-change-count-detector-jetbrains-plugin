@@ -76,7 +76,6 @@ public class VCSFileChangeCountWidgetFactory implements StatusBarWidgetFactory {
         }
 
 
-
         @Override
         public void install(@NotNull StatusBar statusBar) {
         }
