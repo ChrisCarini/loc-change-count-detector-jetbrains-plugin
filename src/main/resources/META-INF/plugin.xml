@@ -15,6 +15,9 @@
     <statusBarWidgetFactory id="LoCCounter"
                             implementation="com.chriscarini.jetbrains.locchangecountdetector.factory.LOCPerCommitWidgetFactory"
                             order="after positionWidget"/>
+    <statusBarWidgetFactory id="LoCIcon"
+                            implementation="com.chriscarini.jetbrains.locchangecountdetector.factory.LOCIconWidgetFactory"
+                            order="before LoCCounter"/>
 
     <notificationGroup displayType="BALLOON" id="LoCCOPNotification"/>
   </extensions>
