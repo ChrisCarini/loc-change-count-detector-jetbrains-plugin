@@ -9,6 +9,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <projectService
+        preload="true"
         serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
     <statusBarWidgetFactory id="LoCCounter"
                             implementation="com.chriscarini.jetbrains.locchangecountdetector.LOCPerCommitWidgetFactory"

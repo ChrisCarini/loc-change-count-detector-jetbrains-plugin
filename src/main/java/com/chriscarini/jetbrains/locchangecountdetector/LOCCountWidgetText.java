@@ -1,5 +1,10 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.intellij.icons.AllIcons;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.event.BulkAwareDocumentListener;
@@ -24,15 +29,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-// 1: Point of action: background job?
-// 2: Analysis on change size Vs review time.
-// 3: Can we show loc and review time while a user is coding?
-// 4: Change Path
-// 5: MP info
-// 6: is it possible to see reviewTime as you're coding? or when does that pop up come up
-// 7: Change the review time to CRL
-// 8: Add tooltip to the status bar showing the comment for review time.
-
 public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation,
         BulkAwareDocumentListener.Simple, CaretListener, SelectionListener, PropertyChangeListener {
 
@@ -40,9 +36,11 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     private MergingUpdateQueue myQueue;
     private @NlsContexts.Label String myText;
+    LoCService myService;
 
     protected LOCCountWidgetText(@NotNull Project project) {
         super(project);
+        myService = LoCService.getInstance(this.myProject);
     }
 
 
@@ -83,7 +81,12 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        return null;
+        int files = Integer.parseInt(myService.getFileCountInCommit()) + Integer.parseInt(myService.getFileCount());
+        int lines = myService.getChangeCountInCommit() + myService.getChangeCount();
+
+        return "You have " + lines + " LoC currently in " + files + " files." + "<br/>" + " On average, it will take about " +
+                myService.getReviewTime(lines) + " biz hrs to get this change reviewed and " + "<br/>" +
+                myService.getApprovalTime(lines) + " biz hrs to get this change approved!!";
     }
 
     @Override
@@ -107,6 +110,8 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     }
 
     private void updateChangeText() {
+//        this.myText = this.getChangeText();
+//        myStatusBar.updateWidget(ID());
         myQueue.queue(Update.create(this, () -> {
             String newText = this.getChangeText();
             if (newText.equals(myText)) return;
@@ -114,13 +119,30 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
             myText = newText;
             if (myStatusBar != null) {
                 myStatusBar.updateWidget(ID());
+
+                Integer changeCount = myService.getChangeCount();
+                if (changeCount > 450) {
+
+                    final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
+                            String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount), NotificationType.INFORMATION);
+                    //notification.setIcon(AllIcons)
+                    notification.addAction(new AnAction() {
+                        @Override
+                        public void actionPerformed(@NotNull AnActionEvent e) {
+                            final Notification notification = new Notification("ProjectOpenNotification", "Clicked the action",
+                                    "You just clicked the action!", NotificationType.INFORMATION);
+                            notification.notify(myProject);
+                        }
+                    });
+                    notification.notify(myProject);
+                }
             }
         }));
     }
 
     @NotNull
     private String getChangeText() {
-        final LoCService myService = LoCService.getInstance(this.myProject);
-        return String.format("%d lines of code changed; %s files changed", myService.getChangeCount(), myService.getFileCount());
+        return String.format("%d/%d::%s/%s", myService.getChangeCountInCommit(), myService.getChangeCount(), myService.getFileCountInCommit(), myService.getFileCount());
     }
+
 }
