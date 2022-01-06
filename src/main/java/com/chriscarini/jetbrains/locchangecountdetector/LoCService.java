@@ -24,7 +24,9 @@ import java.util.concurrent.TimeUnit;
 public class LoCService {
 
     private Integer loc = 0;
-    private String files = "no";
+    private String files = "0";
+    private Integer locInCommit = 0;
+    private String filesInCommit = "0";
 
     private final Project project;
 
@@ -57,6 +59,109 @@ public class LoCService {
         }
     }
 
+    private static Pair<Integer, String> getGitShowStat(@NotNull final Path path) {
+        ProcessBuilder processBuilder1 = new ProcessBuilder();
+        processBuilder1.command("bash", "-c", "git log --pretty=format:'%H' -1").directory(path.toFile());
+        String headCommit = "";
+
+        try {
+            Process process = processBuilder1.start();
+            StringBuilder output = new StringBuilder();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            String line;
+            String l = null;
+
+            while ((line = reader.readLine()) != null) {
+                l = line;
+                output.append(line + "\n");
+            }
+
+            headCommit = l;
+
+            int exitVal = process.waitFor();
+            /*if (exitVal == 0) {
+                System.out.println("Success!");
+                System.out.println(output);
+                System.exit(0);
+            } else {
+                //abnormal...
+            }*/
+            //Messages.showInfoMessage("Commit", output.toString());
+        } catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        // Find out the LOC from this head commit
+        System.out.println("headCommit is :: " + headCommit);
+        ProcessBuilder processBuilder2 = new ProcessBuilder();
+        processBuilder2.command("bash", "-c", "git show --stat").directory(path.toFile());
+        String filesChanged = "";
+        int loc = 0;
+
+        try {
+
+            Process process = processBuilder2.start();
+            StringBuilder output = new StringBuilder();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+
+            String line;
+            String lastLine = "";
+            while ((line = reader.readLine()) != null) {
+                lastLine = line;
+                System.out.println(lastLine);
+                output.append(line + "\n");
+            }
+
+            int exitVal = process.waitFor();
+            /*if (exitVal == 0) {
+                System.out.println("Success!");
+                System.out.println(output);
+                System.exit(0);
+            } else {
+                //abnormal...
+            }*/
+//                            String[] lastArray = lastLine.split(" ");
+//                            if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
+//                                return;
+//                            }
+//                            filesChanged = lastArray[1];
+//                            int additions = Integer.parseInt(lastArray[4]);
+//                            int deletions = 0;
+//                            loc = additions + deletions;
+            String[] lastArray = lastLine.split(",");
+            /*if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
+                continue;
+            }
+            */
+            String[] firstLine = lastArray[0].split(" ");
+            if (firstLine.length == 0) {
+                return new Pair<>(0, "0");
+            }
+            filesChanged = firstLine[1];
+            System.out.println("dfasdfasdf:::" + filesChanged);
+            int additions = 0;
+            int deletions = 0;
+            String[] secondLine = lastArray[1].split(" ");
+            if (secondLine[1].equals("insertions(+)")) {
+                additions = Integer.parseInt(secondLine[1]);
+                if (lastArray.length == 3) {
+                    String[] thirdLine = lastArray[2].split(" ");
+                    deletions = Integer.parseInt(thirdLine[1]);
+                }
+            } else {
+                deletions = Integer.parseInt(secondLine[1]);
+            }
+
+            loc = additions + deletions;
+        } catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        return new Pair<>(loc, filesChanged);
+    }
+
     private static Pair<Integer, Integer> getGitDiffNumstat(@NotNull final Path path) {
         final ProcessBuilder processBuilder2 = new ProcessBuilder();
         processBuilder2.command("bash", "-c", "git diff HEAD --numstat").directory(path.toFile());
@@ -84,7 +189,7 @@ public class LoCService {
             e.printStackTrace();
         }
 
-        return new Pair<>(additions - deletions, filesChanged);
+        return new Pair<>(additions + deletions, filesChanged);
     }
 
     public void computeLoCInfo() {
@@ -99,115 +204,13 @@ public class LoCService {
                         final Path projectDir = Paths.get(projectPath);
 
                         final Pair<Integer, Integer> info = LoCService.getGitDiffNumstat(projectDir);
+                        final Pair<Integer, String> infoInHeadCommit = LoCService.getGitShowStat(projectDir);
 
                         LoCService.getInstance(myProject).setFiles(info.second.toString());
                         LoCService.getInstance(myProject).setLoc(info.first);
 
-//                        //Sulabh's logic for git commands
-//                        ProcessBuilder processBuilder1 = new ProcessBuilder();
-//                        processBuilder1.command("bash", "-c", "git log --pretty=format:'%H' -1").directory(projectDir.toFile());
-//                        String headCommit = "";
-//
-//                        try {
-//                            Process process = processBuilder1.start();
-//                            StringBuilder output = new StringBuilder();
-//                            BufferedReader reader = new BufferedReader(
-//                                    new InputStreamReader(process.getInputStream()));
-//                            String line;
-//                            String l = null;
-//
-//                            while ((line = reader.readLine()) != null) {
-//                                l = line;
-//                                output.append(line + "\n");
-//                            }
-//
-//                            headCommit = l;
-//
-//                            int exitVal = process.waitFor();
-//            /*if (exitVal == 0) {
-//                System.out.println("Success!");
-//                System.out.println(output);
-//                System.exit(0);
-//            } else {
-//                //abnormal...
-//            }*/
-//                            //Messages.showInfoMessage("Commit", output.toString());
-//                        } catch (IOException | InterruptedException ex) {
-//                            ex.printStackTrace();
-//                        }
-//
-//                        // Find out the LOC from this head commit
-//                        System.out.println("headCommit is :: " + headCommit);
-//                        ProcessBuilder processBuilder2 = new ProcessBuilder();
-////                        processBuilder2.command("bash", "-c", "git show --stat").directory(directory.toFile());
-//                        //processBuilder2.command("bash", "-c", "git log --stat").directory(directory.toFile());
-//                        processBuilder2.command("bash", "-c", "git diff HEAD --numstat").directory(projectDir.toFile());
-//                        String filesChanged = "";
-//                        int loc = 0;
-//
-//                        try {
-//
-//                            Process process = processBuilder2.start();
-//                            StringBuilder output = new StringBuilder();
-//                            BufferedReader reader = new BufferedReader(
-//                                    new InputStreamReader(process.getInputStream()));
-//
-//                            String line;
-//                            String lastLine = "";
-//                            while ((line = reader.readLine()) != null) {
-//                                lastLine = line;
-//                                System.out.println(lastLine);
-//                                output.append(line + "\n");
-//                            }
-//
-//                            int exitVal = process.waitFor();
-//            /*if (exitVal == 0) {
-//                System.out.println("Success!");
-//                System.out.println(output);
-//                System.exit(0);
-//            } else {
-//                //abnormal...
-//            }*/
-////                            String[] lastArray = lastLine.split(" ");
-////                            if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
-////                                return;
-////                            }
-////                            filesChanged = lastArray[1];
-////                            int additions = Integer.parseInt(lastArray[4]);
-////                            int deletions = 0;
-////                            loc = additions + deletions;
-//                            String[] lastArray = lastLine.split("\t");
-//                            if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
-//                                return;
-//                            }
-//                            filesChanged = lastArray[1];
-//                            int additions = Integer.parseInt(lastArray[0]);
-//                            int deletions = Integer.parseInt(lastArray[1]);
-//                            loc = additions + deletions;
-//
-//                            // Hard code these value by getting them from our GitHub dashboards
-//                            double reviewHoursS = 23400 / 3600;
-//                            double reviewHoursM = 27000 / 3600;
-//                            double reviewHoursL = 36000 / 3600;
-//                            double reviewHoursXL = 45000 / 3600;
-//                            double reviewTime = 0;
-//
-//                            if (loc > 100 && loc <= 500) {
-//                                reviewTime = reviewHoursL;
-//                            } else if (loc > 15 && loc <= 100) {
-//                                reviewTime = reviewHoursM;
-//                            } else if (loc >= 0 && loc <= 15) {
-//                                reviewTime = reviewHoursS;
-//                            } else {
-//                                reviewTime = reviewHoursXL;
-//                            }
-//                            //Messages.showInfoMessage("Lines Counter", "You have " + loc + " LoC currently in " + filesChanged + " files. On average, it will take about " + reviewTime + " business hours to get this change reviewed!!");
-//                        } catch (IOException | InterruptedException ex) {
-//                            ex.printStackTrace();
-//                        }
-//
-//                        LoCService.getInstance(myProject).setFiles(filesChanged);
-//                        LoCService.getInstance(myProject).setLoc(loc);
+                        LoCService.getInstance(myProject).setFilesInCommit(infoInHeadCommit.second.toString());
+                        LoCService.getInstance(myProject).setLocInCommit(infoInHeadCommit.first);
                     }
                 });
 
@@ -220,8 +223,19 @@ public class LoCService {
 
     @NotNull
     public String getFileCount() {
-        return Objects.requireNonNullElse(files, "no");
+        return Objects.requireNonNullElse(files, "0");
     }
+
+    @NotNull
+    public Integer getChangeCountInCommit() {
+        return Objects.requireNonNullElse(locInCommit, 0);
+    }
+
+    @NotNull
+    public String getFileCountInCommit() {
+        return Objects.requireNonNullElse(filesInCommit, "0");
+    }
+
 
     public void setLoc(@NotNull final Integer loc) {
         this.loc = loc;
@@ -230,5 +244,68 @@ public class LoCService {
     public void setFiles(@NotNull final String files) {
         this.files = files;
     }
+
+    public void setLocInCommit(@NotNull final Integer loc) {
+        this.locInCommit = loc;
+    }
+
+    public void setFilesInCommit(@NotNull final String files) {
+        this.filesInCommit = files;
+    }
+
+    @NotNull
+    public double getReviewTime(int loc) {
+        // Hard code these value by getting them from our GitHub dashboards
+        double reviewHoursXS = 21600 / 3600;
+        double reviewHoursS = 23400 / 3600;
+        double reviewHoursM = 27000 / 3600;
+        double reviewHoursL = 36000 / 3600;
+        double reviewHoursXL = 45000 / 3600;
+        double reviewHoursXXL = 54000 / 3600;
+        double reviewTime = 0;
+
+        if (loc >= 0 && loc <= 9) {
+            reviewTime = reviewHoursXS;
+        } else if (loc >= 10 && loc <= 29) {
+            reviewTime = reviewHoursS;
+        } else if (loc >= 30 && loc <= 99) {
+            reviewTime = reviewHoursM;
+        } else if (loc >= 100 && loc <= 499) {
+            reviewTime = reviewHoursL;
+        } else if (loc >= 500 && loc <= 999) {
+            reviewTime = reviewHoursXL;
+        } else {
+            reviewTime = reviewHoursXXL;
+        }
+        return reviewTime;
+    }
+
+    @NotNull
+    public double getApprovalTime(int loc) {
+        // Hard code these value by getting them from our GitHub dashboards
+        double approvalHoursXS = 28800 / 3600;
+        double approvalHoursS = 36000 / 3600;
+        double approvalHoursM = 54000 / 3600;
+        double approvalHoursL = 90000 / 3600;
+        double approvalHoursXL = 108000 / 3600;
+        double approvalHoursXXL = 126000 / 3600;
+        double approvalTime = 0;
+
+        if (loc >= 0 && loc <= 9) {
+            approvalTime = approvalHoursXS;
+        } else if (loc >= 10 && loc <= 29) {
+            approvalTime = approvalHoursS;
+        } else if (loc >= 30 && loc <= 99) {
+            approvalTime = approvalHoursM;
+        } else if (loc >= 100 && loc <= 499) {
+            approvalTime = approvalHoursL;
+        } else if (loc >= 500 && loc <= 999) {
+            approvalTime = approvalHoursXL;
+        } else {
+            approvalTime = approvalHoursXXL;
+        }
+        return approvalTime;
+    }
 }
+
 
