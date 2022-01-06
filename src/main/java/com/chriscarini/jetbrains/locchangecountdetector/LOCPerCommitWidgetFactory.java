@@ -24,7 +24,8 @@ public class LOCPerCommitWidgetFactory implements StatusBarWidgetFactory {
 
     @Override
     public boolean isAvailable(@NotNull Project project) {
-        return ProjectLevelVcsManager.getInstance(project).hasActiveVcss();
+        //return ProjectLevelVcsManager.getInstance(project).hasActiveVcss();
+        return true;
     }
 
     @Override
