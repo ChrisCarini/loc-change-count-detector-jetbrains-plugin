@@ -124,20 +124,20 @@ public class LoCService {
 //                            int deletions = 0;
 //                            loc = additions + deletions;
             String[] lastArray = lastLine.split(",");
-            /*if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
-                continue;
-            }
-            */
-            String[] firstLine = lastArray[0].split(" ");
-            if (firstLine.length == 0) {
+            if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
                 return new Pair<>(0, "0");
             }
-            filesChanged = firstLine[1];
+
+            String[] filesAddDel = lastArray[0].split(" ");
+            if (filesAddDel.length == 0) {
+                return new Pair<>(0, "0");
+            }
+            filesChanged = filesAddDel[1];
             System.out.println("dfasdfasdf:::" + filesChanged);
             int additions = 0;
             int deletions = 0;
             String[] secondLine = lastArray[1].split(" ");
-            if (secondLine[1].equals("insertions(+)")) {
+            if (secondLine[2].equals("insertions(+)")) {
                 additions = Integer.parseInt(secondLine[1]);
                 if (lastArray.length == 3) {
                     String[] thirdLine = lastArray[2].split(" ");
