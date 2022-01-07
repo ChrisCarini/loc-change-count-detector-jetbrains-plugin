@@ -85,9 +85,27 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         int files = Integer.parseInt(myService.getFileCount());
         int lines = myService.getChangeCount();
 
-        return "You have " + lines + " LoC currently in " + files + " files." + "<br/>" + " On average, it will take about " +
-                myService.getReviewTime(lines) + " biz hrs to get this change reviewed and " + "<br/>" +
-                myService.getApprovalTime(lines) + " biz hrs to get this change approved!!";
+        return "You have " + lines + " LoC currently in " + files + " files." +
+                "<br/>" +
+                " On average, it will take about " +
+                myService.getReviewTime(lines) +
+                " biz hrs to get this change reviewed and "
+                + "<br/>" +
+                myService.getApprovalTime(lines) +
+                " biz hrs to get this change approved!!"
+                + "<br/"
+                + "<br/"
+                + myService.getChangeCountInCommit() + ":: Diff between local commit and previous commit!"
+                + "<br/"
+                + "<br/"
+                + lines + ":: Diff between staging and previous commit!"
+                + "<br/"
+                + "<br/"
+                + myService.getFileCountInCommit()+ ":: Files in local commit!"
+                + "<br/"
+                + "<br/"
+                + files + ":: Files in staging!"
+                ;
     }
 
     @Override
@@ -150,7 +168,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
                 myStatusBar.updateWidget(ID());
 
                 Integer changeCount = myService.getChangeCount();
-                if (changeCount > 450) {
+                if (changeCount > 500) {
 
                     final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
                             String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount), NotificationType.INFORMATION);
