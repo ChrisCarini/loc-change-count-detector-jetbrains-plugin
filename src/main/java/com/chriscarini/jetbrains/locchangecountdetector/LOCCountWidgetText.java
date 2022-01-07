@@ -1,5 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -81,8 +82,8 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        int files = Integer.parseInt(myService.getFileCountInCommit()) + Integer.parseInt(myService.getFileCount());
-        int lines = myService.getChangeCountInCommit() + myService.getChangeCount();
+        int files = Integer.parseInt(myService.getFileCount());
+        int lines = myService.getChangeCount();
 
         return "You have " + lines + " LoC currently in " + files + " files." + "<br/>" + " On average, it will take about " +
                 myService.getReviewTime(lines) + " biz hrs to get this change reviewed and " + "<br/>" +
@@ -153,7 +154,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
                     final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
                             String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount), NotificationType.INFORMATION);
-                    //notification.setIcon(AllIcons)
+                    notification.setIcon(AllIcons.General.Warning);
                     notification.addAction(new AnAction() {
                         @Override
                         public void actionPerformed(@NotNull AnActionEvent e) {
