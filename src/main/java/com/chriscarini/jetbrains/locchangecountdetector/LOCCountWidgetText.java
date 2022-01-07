@@ -150,7 +150,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
                 myStatusBar.updateWidget(ID());
 
                 Integer changeCount = myService.getChangeCount();
-                if (changeCount > 450) {
+                if (changeCount > 500) {
 
                     final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
                             String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount), NotificationType.INFORMATION);
