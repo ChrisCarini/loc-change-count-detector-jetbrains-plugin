@@ -1,20 +1,18 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.event.BulkAwareDocumentListener;
-import com.intellij.openapi.editor.event.CaretListener;
-import com.intellij.openapi.editor.event.EditorEventMulticaster;
-import com.intellij.openapi.editor.event.SelectionListener;
+import com.intellij.openapi.editor.event.*;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.NlsContexts;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.impl.status.EditorBasedWidget;
@@ -37,9 +35,11 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     private MergingUpdateQueue myQueue;
     private @NlsContexts.Label String myText;
     LoCService myService;
+    private Project project;
 
     protected LOCCountWidgetText(@NotNull Project project) {
         super(project);
+        this.project = project;
         myService = LoCService.getInstance(this.myProject);
     }
 
@@ -96,11 +96,26 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     @Override
     public void afterDocumentChange(@NotNull Document document) {
-        this.updateChangeText();
+        saveDocAndUpdate(document);
     }
 
     @Override
+    public void caretPositionChanged(@NotNull CaretEvent event) {
+        saveDocAndUpdate(event.getEditor().getDocument());
+    }
+
+
+    @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+        final VirtualFile file = event.getNewEditor().getFile();
+        if (file != null) {
+            final Document document = FileDocumentManager.getInstance().getDocument(file);
+            if (document != null) {
+                this.saveDocAndUpdate(document);
+            }
+            return;
+        }
+
         this.updateChangeText();
     }
 
@@ -108,6 +123,19 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     public void propertyChange(PropertyChangeEvent e) {
         this.updateChangeText();
     }
+
+    /**
+     * Save the provided document and update LoC info.
+     * TODO(ChrisCarini) - This is *SUPER* sub-ideal, and only being committed for the hack-demo tomorrow. Figure out a better way.
+     *
+     * @param document The document to save.
+     */
+    private void saveDocAndUpdate(@NotNull Document document) {
+        FileDocumentManager.getInstance().saveDocument(document);
+        LoCService.getInstance(this.project).computeLoCInfo();
+        this.updateChangeText();
+    }
+
 
     private void updateChangeText() {
 //        this.myText = this.getChangeText();

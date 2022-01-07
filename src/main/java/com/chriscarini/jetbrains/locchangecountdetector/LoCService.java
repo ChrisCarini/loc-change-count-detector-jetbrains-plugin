@@ -1,15 +1,10 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
-import com.intellij.concurrency.JobScheduler;
-import com.intellij.ide.AppLifecycleListener;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
-import com.intellij.util.messages.MessageBusConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -18,8 +13,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class LoCService {
 
@@ -36,28 +29,28 @@ public class LoCService {
 
     public LoCService(@NotNull final Project project) {
         this.project = project;
-        ScheduledFuture<?> checkChangesStatusJob = JobScheduler.getScheduler()
-                .scheduleWithFixedDelay(() -> this.computeLoCInfo(), 0, 10, TimeUnit.SECONDS);
-
-        // Subscribe to appWillBeClosed event to emit shutdown metric
-        // we cannot do this disposeComponent as it seems services get killed too fast (before dispose but after appClosing)
-        final Application app = ApplicationManager.getApplication();
-        final MessageBusConnection connection = app.getMessageBus().connect(app);
-        connection.subscribe(AppLifecycleListener.TOPIC, new LoCServiceLifecycleListener(checkChangesStatusJob));
+//        ScheduledFuture<?> checkChangesStatusJob = JobScheduler.getScheduler()
+//                .scheduleWithFixedDelay(() -> this.computeLoCInfo(), 0, 1, TimeUnit.SECONDS);
+//
+//        // Subscribe to appWillBeClosed event to emit shutdown metric
+//        // we cannot do this disposeComponent as it seems services get killed too fast (before dispose but after appClosing)
+//        final Application app = ApplicationManager.getApplication();
+//        final MessageBusConnection connection = app.getMessageBus().connect(app);
+//        connection.subscribe(AppLifecycleListener.TOPIC, new LoCServiceLifecycleListener(checkChangesStatusJob));
     }
 
-    protected static class LoCServiceLifecycleListener implements AppLifecycleListener {
-        private final ScheduledFuture<?> heartBeatJob;
-
-        LoCServiceLifecycleListener(final ScheduledFuture<?> heartBeatJob) {
-            this.heartBeatJob = heartBeatJob;
-        }
-
-        @Override
-        public void appWillBeClosed(final boolean isRestart) {
-            heartBeatJob.cancel(false);
-        }
-    }
+//    protected static class LoCServiceLifecycleListener implements AppLifecycleListener {
+//        private final ScheduledFuture<?> heartBeatJob;
+//
+//        LoCServiceLifecycleListener(final ScheduledFuture<?> heartBeatJob) {
+//            this.heartBeatJob = heartBeatJob;
+//        }
+//
+//        @Override
+//        public void appWillBeClosed(final boolean isRestart) {
+//            heartBeatJob.cancel(false);
+//        }
+//    }
 
     private static Pair<Integer, String> getGitShowStat(@NotNull final Path path) {
         ProcessBuilder processBuilder1 = new ProcessBuilder();
