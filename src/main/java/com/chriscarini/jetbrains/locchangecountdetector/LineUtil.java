@@ -6,6 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 public final class LineUtil {
 
+    public static final char NEW_LINE_CHAR = '\n';
+    public static final char CARRIAGE_RETURN_CHAR = '\r';
+    public static final char TAB_CHAR = '\t';
+
     private LineUtil() {
     }
 
@@ -24,12 +28,12 @@ public final class LineUtil {
         boolean onEmptyLine = true;
         final char[] chars = text.toCharArray();
         for (char aChar : chars) {
-            if (aChar == '\n' || aChar == '\r') {
+            if (LineUtil.isNewlineOrCarriageReturn(aChar)) {
                 if (!onEmptyLine) {
                     lines++;
                     onEmptyLine = true;
                 }
-            } else if (aChar != ' ' && aChar != '\t') {
+            } else if (aChar != ' ' && aChar != TAB_CHAR) {
                 onEmptyLine = false;
             }
         }
@@ -37,5 +41,9 @@ public final class LineUtil {
             lines++;
         }
         return lines;
+    }
+
+    public static boolean isNewlineOrCarriageReturn(final char charToTest) {
+        return charToTest == NEW_LINE_CHAR || charToTest == CARRIAGE_RETURN_CHAR;
     }
 }

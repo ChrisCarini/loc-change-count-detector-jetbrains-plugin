@@ -1,5 +1,7 @@
-package com.chriscarini.jetbrains.locchangecountdetector;
+package com.chriscarini.jetbrains.locchangecountdetector.widget;
 
+import com.chriscarini.jetbrains.locchangecountdetector.LoCService;
+import com.chriscarini.jetbrains.locchangecountdetector.Utils;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -36,7 +38,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     private final LoCService locService;
 
-    protected LOCCountWidgetText(@NotNull Project project) {
+    public LOCCountWidgetText(@NotNull Project project) {
         super(project);
         locService = LoCService.getInstance(myProject);
 
@@ -95,30 +97,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        int files = Integer.parseInt(locService.getFileCount());
-        int lines = locService.getChangeCount();
-
-        return "You have " + lines + " LoC currently in " + files + " files." +
-                "<br/>" +
-                " On average, it will take about " +
-                locService.getReviewTime(lines) +
-                " biz hrs to get this change reviewed and "
-                + "<br/>" +
-                locService.getApprovalTime(lines) +
-                " biz hrs to get this change approved!!"
-                + "<br/>"
-                + "<br/>"
-                + locService.getChangeCountInCommit() + ":: Diff between local commit and previous commit!"
-                + "<br/>"
-                + "<br/>"
-                + lines + ":: Diff between staging and previous commit!"
-                + "<br/>"
-                + "<br/>"
-                + locService.getFileCountInCommit() + ":: Files in local commit!"
-                + "<br/>"
-                + "<br/>"
-                + files + ":: Files in staging!"
-                ;
+        return Utils.generateToolTipText(locService);
     }
 
     @Override

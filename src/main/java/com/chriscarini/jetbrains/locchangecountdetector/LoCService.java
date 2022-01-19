@@ -17,9 +17,9 @@ import java.util.Objects;
 public class LoCService {
 
     private Integer loc = 0;
-    private String files = "0";
+    private Integer files = 0;
     private Integer locInCommit = 0;
-    private String filesInCommit = "0";
+    private Integer filesInCommit = 0;
 
     private final Project project;
 
@@ -31,7 +31,7 @@ public class LoCService {
         this.project = project;
     }
 
-    private Pair<Integer, String> getGitShowStat() {
+    private Pair<Integer, Integer> getGitShowStat() {
         String filesChanged = "";
         int loc = 0;
 
@@ -42,12 +42,12 @@ public class LoCService {
 
             final String[] lastArray = lastLine.split(",");
             if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
-                return new Pair<>(0, "0");
+                return new Pair<>(0, 0);
             }
 
             final String[] filesAddDel = lastArray[0].split(" ");
             if (filesAddDel.length == 0) {
-                return new Pair<>(0, "0");
+                return new Pair<>(0, 0);
             }
             filesChanged = filesAddDel[1];
             int additions = 0;
@@ -68,10 +68,10 @@ public class LoCService {
             e.printStackTrace();
         }
 
-        return new Pair<>(loc, filesChanged);
+        return new Pair<>(loc, Integer.valueOf(filesChanged));
     }
 
-    private Pair<Integer, Integer> getGitDiffNumstat() {
+    private Pair<Integer, Integer> getGitDiffNumStat() {
 
         int filesChanged = 0;
         int additions = 0;
@@ -103,6 +103,7 @@ public class LoCService {
         handler.setSilent(true);
         handler.setStdoutSuppressed(true);
         handler.addParameters("HEAD");
+        //noinspection SpellCheckingInspection
         handler.addParameters("--numstat");
 
         return Git.getInstance().runCommand(handler).getOutputOrThrow();
@@ -122,18 +123,21 @@ public class LoCService {
 
     public void computeLoCInfo() {
         ProgressManager.getInstance()
-                .run(new Task.Backgroundable(this.project, "My background thing") {
+                .run(new Task.Backgroundable(this.project, "Compute LoC changes...") {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
+                        if (myProject == null) {
+                            return;
+                        }
                         final String projectPath = myProject.getBasePath();
                         if (projectPath == null) {
                             return;
                         }
 
-                        final Pair<Integer, Integer> info = getGitDiffNumstat();
-                        final Pair<Integer, String> infoInHeadCommit = getGitShowStat();
+                        final Pair<Integer, Integer> info = getGitDiffNumStat();
+                        final Pair<Integer, Integer> infoInHeadCommit = getGitShowStat();
 
-                        LoCService.getInstance(myProject).setFiles(info.second.toString());
+                        LoCService.getInstance(myProject).setFiles(info.second);
                         LoCService.getInstance(myProject).setLoc(info.first);
 
                         LoCService.getInstance(myProject).setFilesInCommit(infoInHeadCommit.second);
@@ -149,8 +153,8 @@ public class LoCService {
     }
 
     @NotNull
-    public String getFileCount() {
-        return Objects.requireNonNullElse(files, "0");
+    public Integer getFileCount() {
+        return Objects.requireNonNullElse(files, 0);
     }
 
     @NotNull
@@ -159,8 +163,8 @@ public class LoCService {
     }
 
     @NotNull
-    public String getFileCountInCommit() {
-        return Objects.requireNonNullElse(filesInCommit, "0");
+    public Integer getFileCountInCommit() {
+        return Objects.requireNonNullElse(filesInCommit, 0);
     }
 
 
@@ -168,7 +172,7 @@ public class LoCService {
         this.loc = loc;
     }
 
-    public void setFiles(@NotNull final String files) {
+    public void setFiles(@NotNull final Integer files) {
         this.files = files;
     }
 
@@ -176,12 +180,12 @@ public class LoCService {
         this.locInCommit = loc;
     }
 
-    public void setFilesInCommit(@NotNull final String files) {
+    public void setFilesInCommit(@NotNull final Integer files) {
         this.filesInCommit = files;
     }
 
     @NotNull
-    public double getReviewTime(int loc) {
+    public Double getReviewTime(int loc) {
         // Hard code these value by getting them from our GitHub dashboards
         double reviewHoursXS = 21600 / 3600;
         double reviewHoursS = 23400 / 3600;
@@ -189,7 +193,7 @@ public class LoCService {
         double reviewHoursL = 36000 / 3600;
         double reviewHoursXL = 45000 / 3600;
         double reviewHoursXXL = 54000 / 3600;
-        double reviewTime = 0;
+        double reviewTime;
 
         if (loc >= 0 && loc <= 9) {
             reviewTime = reviewHoursXS;
@@ -207,7 +211,8 @@ public class LoCService {
         return reviewTime;
     }
 
-    public double getApprovalTime(int loc) {
+    @NotNull
+    public Double getApprovalTime(int loc) {
         // Hard code these value by getting them from our GitHub dashboards
         double approvalHoursXS = 28800 / 3600;
         double approvalHoursS = 36000 / 3600;
@@ -215,7 +220,7 @@ public class LoCService {
         double approvalHoursL = 90000 / 3600;
         double approvalHoursXL = 108000 / 3600;
         double approvalHoursXXL = 126000 / 3600;
-        double approvalTime = 0;
+        double approvalTime;
 
         if (loc >= 0 && loc <= 9) {
             approvalTime = approvalHoursXS;
