@@ -5,6 +5,8 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.util.IconUtil;
 
+import javax.swing.*;
+
 
 /**
  * Icons for LoC COP
