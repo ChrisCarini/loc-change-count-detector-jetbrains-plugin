@@ -1,7 +1,7 @@
 # LoC Change Count Detector JetBrains Plugin
 
-[![GitHub License](https://img.shields.io/github/license/ChrisCarini/loc-change-count-detector-jetbrains-plugin?style=flat-square)](https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/blob/master/LICENSE)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ChrisCarini/loc-change-count-detector-jetbrains-plugin/JetBrains%20Plugin%20CI?logo=GitHub&style=flat-square)](https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/actions?query=workflow%3A%22JetBrains+Plugin+CI%22)
+[![GitHub License](https://img.shields.io/github/license/ChrisCarini/loc-change-count-detector-jetbrains-plugin?style=flat-square)](https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/blob/main/LICENSE)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ChrisCarini/loc-change-count-detector-jetbrains-plugin/Build?logo=GitHub&style=flat-square)](https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/actions?query=workflow%3A%22Build%22)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ChrisCarini/loc-change-count-detector-jetbrains-plugin/IntelliJ%20Plugin%20Compatibility?label=IntelliJ%20Plugin%20Compatibility&logo=GitHub&style=flat-square)](https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/actions?query=workflow%3A%22IntelliJ+Plugin+Compatibility%22)
 
 <!-- Plugin description -->
