@@ -5,15 +5,13 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.event.*;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.impl.status.EditorBasedWidget;
@@ -25,25 +23,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.List;
 
-public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation,
-        BulkAwareDocumentListener.Simple, CaretListener, SelectionListener, PropertyChangeListener {
+public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation {
 
     public static final String ID = "LoCCounter";
-
+    LoCService myService;
     private MergingUpdateQueue myQueue;
     private @NlsContexts.Label String myText;
-    LoCService myService;
     private Project project;
 
     protected LOCCountWidgetText(@NotNull Project project) {
         super(project);
         this.project = project;
         myService = LoCService.getInstance(this.myProject);
-    }
 
+        project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
+            @Override
+            public void after(@NotNull List<? extends VFileEvent> events) {
+                for (int i = 0; i < events.size(); i++) {
+                    if (events.get(i).isFromSave()) {
+                        updateChangeText();
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public @NonNls @NotNull String ID() {
@@ -54,10 +59,6 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     public void install(@NotNull StatusBar statusBar) {
         super.install(statusBar);
         this.myQueue = new MergingUpdateQueue("PositionPanel", 100, true, null, this);
-        EditorEventMulticaster multicaster = EditorFactory.getInstance().getEventMulticaster();
-        multicaster.addCaretListener(this, this);
-        multicaster.addSelectionListener(this, this);
-        multicaster.addDocumentListener(this, this);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
                 + lines + ":: Diff between staging and previous commit!"
                 + "<br/"
                 + "<br/"
-                + myService.getFileCountInCommit()+ ":: Files in local commit!"
+                + myService.getFileCountInCommit() + ":: Files in local commit!"
                 + "<br/"
                 + "<br/"
                 + files + ":: Files in staging!"
@@ -114,51 +115,11 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     }
 
     @Override
-    public void afterDocumentChange(@NotNull Document document) {
-        saveDocAndUpdate(document);
-    }
-
-    @Override
-    public void caretPositionChanged(@NotNull CaretEvent event) {
-        saveDocAndUpdate(event.getEditor().getDocument());
-    }
-
-
-    @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
-        final VirtualFile file = event.getNewEditor().getFile();
-        if (file != null) {
-            final Document document = FileDocumentManager.getInstance().getDocument(file);
-            if (document != null) {
-                this.saveDocAndUpdate(document);
-            }
-            return;
-        }
-
-        this.updateChangeText();
     }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        this.updateChangeText();
-    }
-
-    /**
-     * Save the provided document and update LoC info.
-     * TODO(ChrisCarini) - This is *SUPER* sub-ideal, and only being committed for the hack-demo tomorrow. Figure out a better way.
-     *
-     * @param document The document to save.
-     */
-    private void saveDocAndUpdate(@NotNull Document document) {
-        FileDocumentManager.getInstance().saveDocument(document);
-        LoCService.getInstance(this.project).computeLoCInfo();
-        this.updateChangeText();
-    }
-
 
     private void updateChangeText() {
-//        this.myText = this.getChangeText();
-//        myStatusBar.updateWidget(ID());
+        LoCService.getInstance(this.project).computeLoCInfo();
         myQueue.queue(Update.create(this, () -> {
             String newText = this.getChangeText();
             if (newText.equals(myText)) return;

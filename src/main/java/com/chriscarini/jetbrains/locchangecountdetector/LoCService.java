@@ -5,13 +5,21 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.vcs.VcsException;
+import com.intellij.openapi.vfs.VirtualFile;
+import git4idea.commands.Git;
+import git4idea.commands.GitCommand;
+import git4idea.commands.GitLineHandler;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.SystemIndependent;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class LoCService {
@@ -29,100 +37,18 @@ public class LoCService {
 
     public LoCService(@NotNull final Project project) {
         this.project = project;
-//        ScheduledFuture<?> checkChangesStatusJob = JobScheduler.getScheduler()
-//                .scheduleWithFixedDelay(() -> this.computeLoCInfo(), 0, 1, TimeUnit.SECONDS);
-//
-//        // Subscribe to appWillBeClosed event to emit shutdown metric
-//        // we cannot do this disposeComponent as it seems services get killed too fast (before dispose but after appClosing)
-//        final Application app = ApplicationManager.getApplication();
-//        final MessageBusConnection connection = app.getMessageBus().connect(app);
-//        connection.subscribe(AppLifecycleListener.TOPIC, new LoCServiceLifecycleListener(checkChangesStatusJob));
     }
 
-//    protected static class LoCServiceLifecycleListener implements AppLifecycleListener {
-//        private final ScheduledFuture<?> heartBeatJob;
-//
-//        LoCServiceLifecycleListener(final ScheduledFuture<?> heartBeatJob) {
-//            this.heartBeatJob = heartBeatJob;
-//        }
-//
-//        @Override
-//        public void appWillBeClosed(final boolean isRestart) {
-//            heartBeatJob.cancel(false);
-//        }
-//    }
-
-    private static Pair<Integer, String> getGitShowStat(@NotNull final Path path) {
-        ProcessBuilder processBuilder1 = new ProcessBuilder();
-        processBuilder1.command("bash", "-c", "git log --pretty=format:'%H' -1").directory(path.toFile());
-        String headCommit = "";
-
-        try {
-            Process process = processBuilder1.start();
-            StringBuilder output = new StringBuilder();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-            String line;
-            String l = null;
-
-            while ((line = reader.readLine()) != null) {
-                l = line;
-                output.append(line + "\n");
-            }
-
-            headCommit = l;
-
-            int exitVal = process.waitFor();
-            /*if (exitVal == 0) {
-                System.out.println("Success!");
-                System.out.println(output);
-                System.exit(0);
-            } else {
-                //abnormal...
-            }*/
-            //Messages.showInfoMessage("Commit", output.toString());
-        } catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
-        }
-
-        // Find out the LOC from this head commit
-        System.out.println("headCommit is :: " + headCommit);
-        ProcessBuilder processBuilder2 = new ProcessBuilder();
-        processBuilder2.command("bash", "-c", "git show --stat").directory(path.toFile());
+    private Pair<Integer, String> getGitShowStat(@NotNull final Path path) {
         String filesChanged = "";
         int loc = 0;
+        List<VirtualFile> virtualFiles = new ArrayList<>();
 
         try {
+            String lines = getDiffShowStat(this.project, this.project.getBasePath(), virtualFiles);
+            String[] linesArray = lines.split("\n");
+            String lastLine = linesArray[linesArray.length - 1];
 
-            Process process = processBuilder2.start();
-            StringBuilder output = new StringBuilder();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()));
-
-            String line;
-            String lastLine = "";
-            while ((line = reader.readLine()) != null) {
-                lastLine = line;
-                System.out.println(lastLine);
-                output.append(line + "\n");
-            }
-
-            int exitVal = process.waitFor();
-            /*if (exitVal == 0) {
-                System.out.println("Success!");
-                System.out.println(output);
-                System.exit(0);
-            } else {
-                //abnormal...
-            }*/
-//                            String[] lastArray = lastLine.split(" ");
-//                            if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
-//                                return;
-//                            }
-//                            filesChanged = lastArray[1];
-//                            int additions = Integer.parseInt(lastArray[4]);
-//                            int deletions = 0;
-//                            loc = additions + deletions;
             String[] lastArray = lastLine.split(",");
             if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
                 return new Pair<>(0, "0");
@@ -133,7 +59,6 @@ public class LoCService {
                 return new Pair<>(0, "0");
             }
             filesChanged = filesAddDel[1];
-            System.out.println("dfasdfasdf:::" + filesChanged);
             int additions = 0;
             int deletions = 0;
             String[] secondLine = lastArray[1].split(" ");
@@ -148,41 +73,55 @@ public class LoCService {
             }
 
             loc = additions + deletions;
-        } catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
+        } catch (VcsException e) {
+            e.printStackTrace();
         }
 
         return new Pair<>(loc, filesChanged);
     }
 
-    private static Pair<Integer, Integer> getGitDiffNumstat(@NotNull final Path path) {
-        final ProcessBuilder processBuilder2 = new ProcessBuilder();
-        processBuilder2.command("bash", "-c", "git diff HEAD --numstat").directory(path.toFile());
+    private Pair<Integer, Integer> getGitDiffNumstat(@NotNull final Path path) {
 
         int filesChanged = 0;
         int additions = 0;
         int deletions = 0;
 
         try {
-            Process process = processBuilder2.start();
-            StringBuilder output = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            List<VirtualFile> virtualFiles = new ArrayList<>();
+            String line = getDiffNumStat(this.project, this.project.getBasePath(), virtualFiles);
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                final String[] lineSplit = line.split("\t");
-                if (lineSplit.length == 0 || Objects.equals(lineSplit[0], "")) {
-                    continue;
-                }
-                filesChanged += 1;
-                additions += Integer.parseInt(lineSplit[0]);
-                deletions += Integer.parseInt(lineSplit[1]);
+            final String[] lineSplit = line.split("\t");
+            if (lineSplit.length == 0 || Objects.equals(lineSplit[0], "")) {
+                return new Pair<>(additions + deletions, filesChanged);
             }
-        } catch (IOException e) {
+            filesChanged += 1;
+            additions += Integer.parseInt(lineSplit[0]);
+            deletions += Integer.parseInt(lineSplit[1]);
+        } catch (VcsException e) {
             e.printStackTrace();
         }
 
         return new Pair<>(additions + deletions, filesChanged);
+    }
+
+    private static String getDiffNumStat(Project project, @Nullable @SystemIndependent @NonNls String root, List<VirtualFile> virtualFiles) throws VcsException {
+        GitLineHandler handler = new GitLineHandler(project, new File(root), GitCommand.DIFF);
+        handler.setSilent(true);
+        handler.setStdoutSuppressed(true);
+        handler.addParameters("HEAD");
+        handler.addParameters("--numstat");
+        String output = Git.getInstance().runCommand(handler).getOutputOrThrow();
+
+        return output;
+    }
+
+    private static String getDiffShowStat(Project project, @Nullable @SystemIndependent @NonNls String root, List<VirtualFile> virtualFiles) throws VcsException {
+        GitLineHandler handler = new GitLineHandler(project, new File(root), GitCommand.SHOW);
+        handler.setSilent(true);
+        handler.setStdoutSuppressed(true);
+        handler.addParameters("--stat");
+        String output = Git.getInstance().runCommand(handler).getOutputOrThrow();
+        return output;
     }
 
     public void computeLoCInfo() {
@@ -196,8 +135,8 @@ public class LoCService {
                         }
                         final Path projectDir = Paths.get(projectPath);
 
-                        final Pair<Integer, Integer> info = LoCService.getGitDiffNumstat(projectDir);
-                        final Pair<Integer, String> infoInHeadCommit = LoCService.getGitShowStat(projectDir);
+                        final Pair<Integer, Integer> info = getGitDiffNumstat(projectDir);
+                        final Pair<Integer, String> infoInHeadCommit = getGitShowStat(projectDir);
 
                         LoCService.getInstance(myProject).setFiles(info.second.toString());
                         LoCService.getInstance(myProject).setLoc(info.first);
