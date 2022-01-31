@@ -239,5 +239,3 @@ public class LoCService {
         return approvalTime;
     }
 }
-
-
