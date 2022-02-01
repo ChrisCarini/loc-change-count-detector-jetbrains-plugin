@@ -10,10 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import git4idea.commands.Git;
 import git4idea.commands.GitCommand;
 import git4idea.commands.GitLineHandler;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.SystemIndependent;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -45,7 +42,7 @@ public class LoCService {
         List<VirtualFile> virtualFiles = new ArrayList<>();
 
         try {
-            String lines = getDiffShowStat(this.project, this.project.getBasePath(), virtualFiles);
+            String lines = getDiffShowStat(virtualFiles);
             String[] linesArray = lines.split("\n");
             String lastLine = linesArray[linesArray.length - 1];
 
@@ -88,11 +85,11 @@ public class LoCService {
 
         try {
             List<VirtualFile> virtualFiles = new ArrayList<>();
-            String line = getDiffNumStat(this.project, this.project.getBasePath(), virtualFiles);
+            String line = getDiffNumStat(virtualFiles);
 
             final String[] lineSplit = line.split("\t");
             if (lineSplit.length == 0 || Objects.equals(lineSplit[0], "")) {
-                return new Pair<>(additions + deletions, filesChanged);
+                return new Pair<>(0, 0);
             }
             filesChanged += 1;
             additions += Integer.parseInt(lineSplit[0]);
@@ -104,24 +101,30 @@ public class LoCService {
         return new Pair<>(additions + deletions, filesChanged);
     }
 
-    private static String getDiffNumStat(Project project, @Nullable @SystemIndependent @NonNls String root, List<VirtualFile> virtualFiles) throws VcsException {
-        GitLineHandler handler = new GitLineHandler(project, new File(root), GitCommand.DIFF);
+    private String getDiffNumStat(List<VirtualFile> virtualFiles) throws VcsException {
+        final String basePath = project.getBasePath();
+        if (basePath == null) {
+            return "0";
+        }
+        GitLineHandler handler = new GitLineHandler(project, new File(basePath), GitCommand.DIFF);
         handler.setSilent(true);
         handler.setStdoutSuppressed(true);
         handler.addParameters("HEAD");
         handler.addParameters("--numstat");
-        String output = Git.getInstance().runCommand(handler).getOutputOrThrow();
 
-        return output;
+        return Git.getInstance().runCommand(handler).getOutputOrThrow();
     }
 
-    private static String getDiffShowStat(Project project, @Nullable @SystemIndependent @NonNls String root, List<VirtualFile> virtualFiles) throws VcsException {
-        GitLineHandler handler = new GitLineHandler(project, new File(root), GitCommand.SHOW);
+    private String getDiffShowStat(List<VirtualFile> virtualFiles) throws VcsException {
+        final String basePath = project.getBasePath();
+        if (basePath == null) {
+            return "0";
+        }
+        GitLineHandler handler = new GitLineHandler(project, new File(basePath), GitCommand.SHOW);
         handler.setSilent(true);
         handler.setStdoutSuppressed(true);
         handler.addParameters("--stat");
-        String output = Git.getInstance().runCommand(handler).getOutputOrThrow();
-        return output;
+        return Git.getInstance().runCommand(handler).getOutputOrThrow();
     }
 
     public void computeLoCInfo() {
