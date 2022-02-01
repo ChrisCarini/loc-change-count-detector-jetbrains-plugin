@@ -28,15 +28,14 @@ import java.util.List;
 public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation {
 
     public static final String ID = "LoCCounter";
-    LoCService myService;
     private MergingUpdateQueue myQueue;
     private @NlsContexts.Label String myText;
-    private Project project;
+
+    private final LoCService locService;
 
     protected LOCCountWidgetText(@NotNull Project project) {
         super(project);
-        this.project = project;
-        myService = LoCService.getInstance(this.myProject);
+        locService = LoCService.getInstance(myProject);
 
         project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
             @Override
@@ -83,28 +82,28 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        int files = Integer.parseInt(myService.getFileCount());
-        int lines = myService.getChangeCount();
+        int files = Integer.parseInt(locService.getFileCount());
+        int lines = locService.getChangeCount();
 
         return "You have " + lines + " LoC currently in " + files + " files." +
                 "<br/>" +
                 " On average, it will take about " +
-                myService.getReviewTime(lines) +
+                locService.getReviewTime(lines) +
                 " biz hrs to get this change reviewed and "
                 + "<br/>" +
-                myService.getApprovalTime(lines) +
+                locService.getApprovalTime(lines) +
                 " biz hrs to get this change approved!!"
-                + "<br/"
-                + "<br/"
-                + myService.getChangeCountInCommit() + ":: Diff between local commit and previous commit!"
-                + "<br/"
-                + "<br/"
+                + "<br/>"
+                + "<br/>"
+                + locService.getChangeCountInCommit() + ":: Diff between local commit and previous commit!"
+                + "<br/>"
+                + "<br/>"
                 + lines + ":: Diff between staging and previous commit!"
-                + "<br/"
-                + "<br/"
-                + myService.getFileCountInCommit() + ":: Files in local commit!"
-                + "<br/"
-                + "<br/"
+                + "<br/>"
+                + "<br/>"
+                + locService.getFileCountInCommit() + ":: Files in local commit!"
+                + "<br/>"
+                + "<br/>"
                 + files + ":: Files in staging!"
                 ;
     }
@@ -119,7 +118,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     }
 
     private void updateChangeText() {
-        LoCService.getInstance(this.project).computeLoCInfo();
+        locService.computeLoCInfo();
         myQueue.queue(Update.create(this, () -> {
             String newText = this.getChangeText();
             if (newText.equals(myText)) return;
@@ -128,7 +127,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
             if (myStatusBar != null) {
                 myStatusBar.updateWidget(ID());
 
-                Integer changeCount = myService.getChangeCount();
+                Integer changeCount = locService.getChangeCount();
                 if (changeCount > 500) {
 
                     final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
@@ -150,7 +149,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     @NotNull
     private String getChangeText() {
-        return String.format("%d/%d::%s/%s", myService.getChangeCountInCommit(), myService.getChangeCount(), myService.getFileCountInCommit(), myService.getFileCount());
+        return String.format("%d/%d::%s/%s", locService.getChangeCountInCommit(), locService.getChangeCount(), locService.getFileCountInCommit(), locService.getFileCount());
     }
 
 }
