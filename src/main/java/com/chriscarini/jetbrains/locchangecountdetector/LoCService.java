@@ -6,17 +6,12 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vcs.VcsException;
-import com.intellij.openapi.vfs.VirtualFile;
 import git4idea.commands.Git;
 import git4idea.commands.GitCommand;
 import git4idea.commands.GitLineHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class LoCService {
@@ -36,22 +31,21 @@ public class LoCService {
         this.project = project;
     }
 
-    private Pair<Integer, String> getGitShowStat(@NotNull final Path path) {
+    private Pair<Integer, String> getGitShowStat() {
         String filesChanged = "";
         int loc = 0;
-        List<VirtualFile> virtualFiles = new ArrayList<>();
 
         try {
-            String lines = getDiffShowStat(virtualFiles);
-            String[] linesArray = lines.split("\n");
-            String lastLine = linesArray[linesArray.length - 1];
+            final String lines = getDiffShowStat();
+            final String[] linesArray = lines.split("\n");
+            final String lastLine = linesArray[linesArray.length - 1];
 
-            String[] lastArray = lastLine.split(",");
+            final String[] lastArray = lastLine.split(",");
             if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
                 return new Pair<>(0, "0");
             }
 
-            String[] filesAddDel = lastArray[0].split(" ");
+            final String[] filesAddDel = lastArray[0].split(" ");
             if (filesAddDel.length == 0) {
                 return new Pair<>(0, "0");
             }
@@ -77,15 +71,14 @@ public class LoCService {
         return new Pair<>(loc, filesChanged);
     }
 
-    private Pair<Integer, Integer> getGitDiffNumstat(@NotNull final Path path) {
+    private Pair<Integer, Integer> getGitDiffNumstat() {
 
         int filesChanged = 0;
         int additions = 0;
         int deletions = 0;
 
         try {
-            List<VirtualFile> virtualFiles = new ArrayList<>();
-            String line = getDiffNumStat(virtualFiles);
+            final String line = getDiffNumStat();
 
             final String[] lineSplit = line.split("\t");
             if (lineSplit.length == 0 || Objects.equals(lineSplit[0], "")) {
@@ -101,7 +94,7 @@ public class LoCService {
         return new Pair<>(additions + deletions, filesChanged);
     }
 
-    private String getDiffNumStat(List<VirtualFile> virtualFiles) throws VcsException {
+    private String getDiffNumStat() throws VcsException {
         final String basePath = project.getBasePath();
         if (basePath == null) {
             return "0";
@@ -115,7 +108,7 @@ public class LoCService {
         return Git.getInstance().runCommand(handler).getOutputOrThrow();
     }
 
-    private String getDiffShowStat(List<VirtualFile> virtualFiles) throws VcsException {
+    private String getDiffShowStat() throws VcsException {
         final String basePath = project.getBasePath();
         if (basePath == null) {
             return "0";
@@ -136,15 +129,14 @@ public class LoCService {
                         if (projectPath == null) {
                             return;
                         }
-                        final Path projectDir = Paths.get(projectPath);
 
-                        final Pair<Integer, Integer> info = getGitDiffNumstat(projectDir);
-                        final Pair<Integer, String> infoInHeadCommit = getGitShowStat(projectDir);
+                        final Pair<Integer, Integer> info = getGitDiffNumstat();
+                        final Pair<Integer, String> infoInHeadCommit = getGitShowStat();
 
                         LoCService.getInstance(myProject).setFiles(info.second.toString());
                         LoCService.getInstance(myProject).setLoc(info.first);
 
-                        LoCService.getInstance(myProject).setFilesInCommit(infoInHeadCommit.second.toString());
+                        LoCService.getInstance(myProject).setFilesInCommit(infoInHeadCommit.second);
                         LoCService.getInstance(myProject).setLocInCommit(infoInHeadCommit.first);
                     }
                 });
@@ -215,7 +207,6 @@ public class LoCService {
         return reviewTime;
     }
 
-    @NotNull
     public double getApprovalTime(int loc) {
         // Hard code these value by getting them from our GitHub dashboards
         double approvalHoursXS = 31210 / 3600;

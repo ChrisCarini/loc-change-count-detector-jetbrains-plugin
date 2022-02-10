@@ -5,6 +5,7 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
@@ -28,7 +29,9 @@ import java.util.List;
 public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation {
 
     public static final String ID = "LoCCounter";
+    public static final String NOTIFICATION_GROUP = "LoCCOPNotification";
     private MergingUpdateQueue myQueue;
+    @SuppressWarnings("UnstableApiUsage")
     private @NlsContexts.Label String myText;
 
     private final LoCService locService;
@@ -40,10 +43,18 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
             @Override
             public void after(@NotNull List<? extends VFileEvent> events) {
-                for (int i = 0; i < events.size(); i++) {
-                    if (events.get(i).isFromSave()) {
-                        updateChangeText();
+                boolean fileWasSaved = false;
+
+                // Iterate over all the files and check if any are from save events
+                for (VFileEvent event : events) {
+                    if (event.isFromSave()) {
+                        fileWasSaved = true;
                     }
+                }
+
+                // If any files changed, schedule an update
+                if (fileWasSaved) {
+                    ApplicationManager.getApplication().invokeLater(() -> updateChangeText());
                 }
             }
         });
@@ -65,6 +76,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         Disposer.dispose(this);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public @NotNull @NlsContexts.Label String getText() {
         return this.myText == null ? "" : this.myText;
@@ -80,6 +92,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         return this;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
         int files = Integer.parseInt(locService.getFileCount());
@@ -130,13 +143,13 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
                 Integer changeCount = locService.getChangeCount();
                 if (changeCount > 500) {
 
-                    final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
+                    final Notification notification = new Notification(NOTIFICATION_GROUP, "Large change detected",
                             String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount), NotificationType.INFORMATION);
                     notification.setIcon(AllIcons.General.Warning);
                     notification.addAction(new AnAction() {
                         @Override
                         public void actionPerformed(@NotNull AnActionEvent e) {
-                            final Notification notification = new Notification("ProjectOpenNotification", "Clicked the action",
+                            final Notification notification = new Notification(NOTIFICATION_GROUP, "Clicked the action",
                                     "You just clicked the action!", NotificationType.INFORMATION);
                             notification.notify(myProject);
                         }
