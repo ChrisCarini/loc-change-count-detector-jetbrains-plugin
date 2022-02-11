@@ -5,15 +5,14 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.event.*;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.impl.status.EditorBasedWidget;
@@ -25,25 +24,41 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.List;
 
-public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation,
-        BulkAwareDocumentListener.Simple, CaretListener, SelectionListener, PropertyChangeListener {
+public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation {
 
     public static final String ID = "LoCCounter";
-
+    public static final String NOTIFICATION_GROUP = "LoCCOPNotification";
     private MergingUpdateQueue myQueue;
+    @SuppressWarnings("UnstableApiUsage")
     private @NlsContexts.Label String myText;
-    LoCService myService;
-    private Project project;
+
+    private final LoCService locService;
 
     protected LOCCountWidgetText(@NotNull Project project) {
         super(project);
-        this.project = project;
-        myService = LoCService.getInstance(this.myProject);
-    }
+        locService = LoCService.getInstance(myProject);
 
+        project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
+            @Override
+            public void after(@NotNull List<? extends VFileEvent> events) {
+                boolean fileWasSaved = false;
+
+                // Iterate over all the files and check if any are from save events
+                for (VFileEvent event : events) {
+                    if (event.isFromSave()) {
+                        fileWasSaved = true;
+                    }
+                }
+
+                // If any files changed, schedule an update
+                if (fileWasSaved) {
+                    ApplicationManager.getApplication().invokeLater(() -> updateChangeText());
+                }
+            }
+        });
+    }
 
     @Override
     public @NonNls @NotNull String ID() {
@@ -54,10 +69,6 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     public void install(@NotNull StatusBar statusBar) {
         super.install(statusBar);
         this.myQueue = new MergingUpdateQueue("PositionPanel", 100, true, null, this);
-        EditorEventMulticaster multicaster = EditorFactory.getInstance().getEventMulticaster();
-        multicaster.addCaretListener(this, this);
-        multicaster.addSelectionListener(this, this);
-        multicaster.addDocumentListener(this, this);
     }
 
     @Override
@@ -65,6 +76,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         Disposer.dispose(this);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public @NotNull @NlsContexts.Label String getText() {
         return this.myText == null ? "" : this.myText;
@@ -80,30 +92,31 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         return this;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        int files = Integer.parseInt(myService.getFileCount());
-        int lines = myService.getChangeCount();
+        int files = Integer.parseInt(locService.getFileCount());
+        int lines = locService.getChangeCount();
 
         return "You have " + lines + " LoC currently in " + files + " files." +
                 "<br/>" +
                 " On average, it will take about " +
-                myService.getReviewTime(lines) +
+                locService.getReviewTime(lines) +
                 " biz hrs to get this change reviewed and "
                 + "<br/>" +
-                myService.getApprovalTime(lines) +
+                locService.getApprovalTime(lines) +
                 " biz hrs to get this change approved!!"
-                + "<br/"
-                + "<br/"
-                + myService.getChangeCountInCommit() + ":: Diff between local commit and previous commit!"
-                + "<br/"
-                + "<br/"
+                + "<br/>"
+                + "<br/>"
+                + locService.getChangeCountInCommit() + ":: Diff between local commit and previous commit!"
+                + "<br/>"
+                + "<br/>"
                 + lines + ":: Diff between staging and previous commit!"
-                + "<br/"
-                + "<br/"
-                + myService.getFileCountInCommit()+ ":: Files in local commit!"
-                + "<br/"
-                + "<br/"
+                + "<br/>"
+                + "<br/>"
+                + locService.getFileCountInCommit() + ":: Files in local commit!"
+                + "<br/>"
+                + "<br/>"
                 + files + ":: Files in staging!"
                 ;
     }
@@ -114,51 +127,11 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     }
 
     @Override
-    public void afterDocumentChange(@NotNull Document document) {
-        saveDocAndUpdate(document);
-    }
-
-    @Override
-    public void caretPositionChanged(@NotNull CaretEvent event) {
-        saveDocAndUpdate(event.getEditor().getDocument());
-    }
-
-
-    @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
-        final VirtualFile file = event.getNewEditor().getFile();
-        if (file != null) {
-            final Document document = FileDocumentManager.getInstance().getDocument(file);
-            if (document != null) {
-                this.saveDocAndUpdate(document);
-            }
-            return;
-        }
-
-        this.updateChangeText();
     }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent e) {
-        this.updateChangeText();
-    }
-
-    /**
-     * Save the provided document and update LoC info.
-     * TODO(ChrisCarini) - This is *SUPER* sub-ideal, and only being committed for the hack-demo tomorrow. Figure out a better way.
-     *
-     * @param document The document to save.
-     */
-    private void saveDocAndUpdate(@NotNull Document document) {
-        FileDocumentManager.getInstance().saveDocument(document);
-        LoCService.getInstance(this.project).computeLoCInfo();
-        this.updateChangeText();
-    }
-
 
     private void updateChangeText() {
-//        this.myText = this.getChangeText();
-//        myStatusBar.updateWidget(ID());
+        locService.computeLoCInfo();
         myQueue.queue(Update.create(this, () -> {
             String newText = this.getChangeText();
             if (newText.equals(myText)) return;
@@ -167,16 +140,16 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
             if (myStatusBar != null) {
                 myStatusBar.updateWidget(ID());
 
-                Integer changeCount = myService.getChangeCount();
+                Integer changeCount = locService.getChangeCount();
                 if (changeCount > 500) {
 
-                    final Notification notification = new Notification("ProjectOpenNotification", "Large Change Detected",
+                    final Notification notification = new Notification(NOTIFICATION_GROUP, "Large change detected",
                             String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount), NotificationType.INFORMATION);
                     notification.setIcon(AllIcons.General.Warning);
                     notification.addAction(new AnAction() {
                         @Override
                         public void actionPerformed(@NotNull AnActionEvent e) {
-                            final Notification notification = new Notification("ProjectOpenNotification", "Clicked the action",
+                            final Notification notification = new Notification(NOTIFICATION_GROUP, "Clicked the action",
                                     "You just clicked the action!", NotificationType.INFORMATION);
                             notification.notify(myProject);
                         }
@@ -189,7 +162,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
 
     @NotNull
     private String getChangeText() {
-        return String.format("%d/%d::%s/%s", myService.getChangeCountInCommit(), myService.getChangeCount(), myService.getFileCountInCommit(), myService.getFileCount());
+        return String.format("%d/%d::%s/%s", locService.getChangeCountInCommit(), locService.getChangeCount(), locService.getFileCountInCommit(), locService.getFileCount());
     }
 
 }
