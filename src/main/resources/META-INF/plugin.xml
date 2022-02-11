@@ -6,6 +6,7 @@
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
   <depends>com.intellij.modules.platform</depends>
+  <depends>Git4Idea</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <projectService
@@ -14,6 +15,8 @@
     <statusBarWidgetFactory id="LoCCounter"
                             implementation="com.chriscarini.jetbrains.locchangecountdetector.LOCPerCommitWidgetFactory"
                             order="after positionWidget"/>
+
+    <notificationGroup displayType="BALLOON" id="LoCCOPNotification"/>
   </extensions>
 
 </idea-plugin>
