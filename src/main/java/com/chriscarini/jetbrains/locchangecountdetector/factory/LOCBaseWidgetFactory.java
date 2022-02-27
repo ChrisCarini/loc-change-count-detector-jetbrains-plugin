@@ -19,6 +19,9 @@ interface LOCBaseWidgetFactory extends StatusBarWidgetFactory {
 
     @Override
     default boolean isAvailable(@NotNull Project project) {
+        // TODO(ChrisCarini) - We could consider things like:
+        //      1) Providing user a setting to show/hide icon (in general)
+        //      2) Show/hide based on number of LoC changed
         return ProjectLevelVcsManager.getInstance(project).hasActiveVcss();
     }
 
