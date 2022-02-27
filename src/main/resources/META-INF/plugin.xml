@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.chriscarini.jetbrains.loc-change-count-detector-jetbrains-plugin</id>
-  <name>LoC Change Count Detector</name>
-  <vendor email="jetbrains@chriscarini.com" url="https://jetbrains.chriscarini.com">Chris Carini</vendor>
+  <name>Lines of Code Change Observer</name>
+  <vendor email="jetbrains@chriscarini.com" url="https://jetbrains.chriscarini.com">Chris Carini &amp; Sulabh Bansal</vendor>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
