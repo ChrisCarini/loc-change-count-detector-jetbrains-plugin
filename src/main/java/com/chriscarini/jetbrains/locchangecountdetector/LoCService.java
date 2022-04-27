@@ -1,5 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -123,7 +124,7 @@ public class LoCService {
 
     public void computeLoCInfo() {
         ProgressManager.getInstance()
-                .run(new Task.Backgroundable(this.project, "Compute LoC changes...") {
+                .run(new Task.Backgroundable(this.project, Messages.message("loc.service.compute.progress.backgroundable.title")) {
                     @Override
                     public void run(@NotNull ProgressIndicator indicator) {
                         if (myProject == null) {

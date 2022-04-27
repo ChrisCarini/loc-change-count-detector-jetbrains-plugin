@@ -1,24 +1,9 @@
 package com.chriscarini.jetbrains.locchangecountdetector.widget;
 
-import com.chriscarini.jetbrains.locchangecountdetector.LoCService;
-import com.chriscarini.jetbrains.locchangecountdetector.Utils;
-import com.intellij.icons.AllIcons;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.vcs.actions.CommonCheckinProjectAction;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.newvfs.BulkFileListener;
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.chriscarini.jetbrains.locchangecountdetector.LoCCOPIcons;
 import com.chriscarini.jetbrains.locchangecountdetector.LoCService;
 import com.chriscarini.jetbrains.locchangecountdetector.Utils;
+import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
@@ -26,17 +11,15 @@ import com.intellij.notification.impl.NotificationFullContent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.event.*;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.NlsContexts;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vcs.actions.CommonCheckinProjectAction;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.impl.status.EditorBasedWidget;
@@ -157,8 +140,11 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
                         }
                     }
 
-                    final Notification notification = new MyNotification("Large change detected!",
-                            Utils.wrapHtml(String.format("You have made a change that is %s lines of code.<br/>Consider creating a PR.", changeCount)), NotificationType.INFORMATION);
+                    final Notification notification = new MyNotification(
+                            Messages.message("loc.count.widget.text.update.change.text.notification.title"),
+                            Messages.message("loc.count.widget.text.update.change.text.notification.content", changeCount),
+                            NotificationType.INFORMATION
+                    );
                     notification.setIcon(LoCCOPIcons.LoCCOP_Warning);
                     notification.addAction(new CreateCommitAction(myProject));
                     notification.notify(myProject);
@@ -193,7 +179,7 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         private final Project myProject;
 
         public CreateCommitAction(@NotNull final Project project) {
-            super("Create Commit Now!");
+            super(Messages.message("loc.count.widget.text.create.commit.action.text"));
             this.myProject = project;
         }
 
@@ -209,8 +195,8 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
             NotificationGroupManager.getInstance()
                     .getNotificationGroup(NOTIFICATION_GROUP)
                     .createNotification(
-                            "Clicked the action",
-                            "Hey, thank you for committing early and often!",
+                            Messages.message("loc.count.widget.text.create.commit.action.notification.title"),
+                            Messages.message("loc.count.widget.text.create.commit.action.notification.content"),
                             NotificationType.INFORMATION
                     )
                     .setIcon(LoCCOPIcons.LoCCOP_OK)
@@ -222,6 +208,4 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
     private String getChangeText() {
         return String.format("%d/%d::%s/%s", locService.getChangeCountInCommit(), locService.getChangeCount(), locService.getFileCountInCommit(), locService.getFileCount());
     }
-
-
 }

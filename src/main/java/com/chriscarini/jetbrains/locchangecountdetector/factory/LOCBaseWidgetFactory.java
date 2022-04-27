@@ -1,5 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector.factory;
 
+import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
@@ -14,7 +15,7 @@ interface LOCBaseWidgetFactory extends StatusBarWidgetFactory {
 
     @Override
     default @Nls @NotNull String getDisplayName() {
-        return "Line change count plugin";
+        return Messages.message("loc.base.widget.factory.display.name");
     }
 
     @Override
