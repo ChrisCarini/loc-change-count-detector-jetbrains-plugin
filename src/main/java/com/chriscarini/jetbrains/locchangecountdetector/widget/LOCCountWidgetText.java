@@ -48,6 +48,9 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
         super(project);
         locService = LoCService.getInstance(myProject);
 
+        // Perform an initial update of the text; see Issue #36 for symptoms
+        ApplicationManager.getApplication().invokeLater(this::updateChangeText);
+
         project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, new BulkFileListener() {
             @Override
             public void after(@NotNull List<? extends VFileEvent> events) {
@@ -57,6 +60,8 @@ public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWi
                 for (VFileEvent event : events) {
                     if (event.isFromSave()) {
                         fileWasSaved = true;
+                        // Exit the for loop once we've found at least one file that was saved.
+                        break;
                     }
                 }
 
