@@ -20,6 +20,16 @@
                             order="before LoCCounter"/>
 
     <notificationGroup displayType="BALLOON" id="LoCCOPNotification"/>
+    <errorHandler
+            implementation="com.chriscarini.jetbrains.locchangecountdetector.errorhandler.GitHubErrorReportSubmitter"/>
   </extensions>
+
+  <actions>
+    <!-- Force an exception to be thrown. -->
+    <action id="LIStudio.Force.Exception.Action"
+            class="com.chriscarini.jetbrains.locchangecountdetector.errorhandler.ForcePluginException">
+      <add-to-group group-id="Internal.Errors"/> <!-- Hide this under the `Tools -> Internal Actions -> Exceptions` menu. -->
+    </action>
+  </actions>
 
 </idea-plugin>
