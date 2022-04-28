@@ -25,10 +25,14 @@
   </extensions>
 
   <actions>
+    <group id="LoC.COP" internal="true" class="com.chriscarini.jetbrains.locchangecountdetector.action.LoCActionGroup" popup="true">
+      <add-to-group group-id="Internal"/>
+    </group>
     <!-- Force an exception to be thrown. -->
-    <action id="LIStudio.Force.Exception.Action"
+    <action id="LoCCOP.Force.Exception.Action"
+            internal="true"
             class="com.chriscarini.jetbrains.locchangecountdetector.errorhandler.ForcePluginException">
-      <add-to-group group-id="Internal.Errors"/> <!-- Hide this under the `Tools -> Internal Actions -> Exceptions` menu. -->
+      <add-to-group group-id="LoC.COP"/> <!-- Hide this under the `Tools -> Internal Actions -> Exceptions` menu. -->
     </action>
   </actions>
 
