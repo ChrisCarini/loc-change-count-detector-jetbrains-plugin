@@ -1,5 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,13 +8,7 @@ import java.util.StringJoiner;
 
 public final class Utils {
 
-    private static final String WRAP_HTML_FORMAT = "<html>%s</html>";
-
     private Utils() {
-    }
-
-    public static @Nls @NotNull String wrapHtml(@NotNull final String msg) {
-        return String.format(WRAP_HTML_FORMAT, msg);
     }
 
     public static @Nls @NotNull String generateToolTipText(@NotNull final LoCService myService) {
@@ -22,19 +17,20 @@ public final class Utils {
 
         final StringJoiner sj = new StringJoiner("<br/>");
 
-        sj.add(String.format("You have %d LoC currently in %d files", lines, files));
+        sj.add(Messages.message("loc.tooltip.text.status", lines, files));
 
-        sj.add(String.format("On average, it will take about %.1f biz hrs to get this change reviewed and", myService.getReviewTime(lines)));
+        sj.add(Messages.message("loc.tooltip.text.time.review",
+                String.format("%.1f", myService.getReviewTime(lines)),
+                String.format("%.1f", myService.getApprovalTime(lines))
+        ));
 
-        sj.add(String.format("%.1f biz hrs to get this change approved!!<br/>", myService.getApprovalTime(lines)));
+        sj.add(Messages.message("loc.tooltip.text.diff.local.and.previous", myService.getChangeCountInCommit()));
 
-        sj.add(String.format("%d :: Diff between local commit and previous commit!<br/>", myService.getChangeCountInCommit()));
+        sj.add(Messages.message("loc.tooltip.text.diff.staging.and.previous", lines));
 
-        sj.add(String.format("%d :: Diff between staging and previous commit!<br/>", lines));
+        sj.add(Messages.message("loc.tooltip.text.files.in.local.diff", myService.getFileCountInCommit()));
 
-        sj.add(String.format("%s :: Files in local commit!<br/>", myService.getFileCountInCommit()));
-
-        sj.add(String.format("%d :: Files in staging!<br/>", files));
+        sj.add(Messages.message("loc.tooltip.text.files.in.staging.diff", files));
 
         return sj.toString();
     }
