@@ -9,6 +9,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -24,12 +25,15 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
 import git4idea.commands.GitCommand;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
 
 public class LoCService implements Disposable {
+    private static final @NonNls Logger LOG = Logger.getInstance(LoCService.class);
+
     public static final String NOTIFICATION_GROUP = "LoCCOPNotification";
     private static final GitNumStat GIT_DIFF_NUMSTAT = new GitNumStat(GitCommand.DIFF);
     private static final GitNumStat GIT_SHOW_NUMSTAT = new GitNumStat(GitCommand.SHOW);
@@ -61,6 +65,7 @@ public class LoCService implements Disposable {
                 // Recompute LoC information if one of the events is from the current project. Otherwise, ignore.
                 for (VFileEvent event : events) {
                     if (ProjectRootManager.getInstance(project).getFileIndex().isInContent(Objects.requireNonNull(event.getFile()))) {
+                        LOG.debug(String.format("%s - Running LoC computation after VFS changes.", project.getName()));
                         computeLoCInfo();
                         return;
                     }
@@ -70,10 +75,12 @@ public class LoCService implements Disposable {
     }
 
     private Pair<Integer, Integer> getGitShowHeadNumStat() {
+        LOG.debug(String.format("%s - Running `git show --numstat`...", project.getName()));
         return GIT_SHOW_NUMSTAT.compute(project).toPair();
     }
 
     private Pair<Integer, Integer> getGitDiffHeadNumStat() {
+        LOG.debug(String.format("%s - Running `git diff --numstat`...", project.getName()));
         return GIT_DIFF_NUMSTAT.compute(project).toPair();
     }
 
@@ -99,10 +106,16 @@ public class LoCService implements Disposable {
                 LoCService.getInstance(myProject).setLocInCommit(infoInHeadCommit.first);
 
                 // Queue UI updates to LoC widgets
-                myQueue.queue(Update.create(LOCBaseWidgetFactory.class, () -> LOCBaseWidgetFactory.updateAllWidgets(project)));
+                myQueue.queue(Update.create(LOCBaseWidgetFactory.class, () -> {
+                    LOG.debug(String.format("%s - Queuing update of all LoC widgets...", project.getName()));
+                    LOCBaseWidgetFactory.updateAllWidgets(project);
+                }));
 
                 // Queue large LoC notification
-                myQueue.queue(Update.create(NOTIFICATION_GROUP, () -> triggerNotification()));
+                myQueue.queue(Update.create(NOTIFICATION_GROUP, () -> {
+                    LOG.debug(String.format("%s - Queuing large LoC notification...", project.getName()));
+                    triggerNotification();
+                }));
             }
         });
     }
