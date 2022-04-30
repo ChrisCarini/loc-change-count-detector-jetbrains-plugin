@@ -19,15 +19,8 @@ public class LOCIconWidgetFactory implements LOCBaseWidgetFactory {
     }
 
     @Override
-    public @NotNull StatusBarWidget createWidget(@NotNull Project project) {
+    public @NotNull StatusBarWidget getWidget(@NotNull Project project) {
         return new LOCWidgetIcon(project);
     }
-
-//    @Override
-//    public boolean isAvailable(@NotNull Project project) {
-//        // TODO(ChrisCarini) - We could consider showing the icon only if the change size exceeds a certain limit.
-//        return ProjectLevelVcsManager.getInstance(project).hasActiveVcss() && LoCService.getInstance(project).getChangeCount() >= 300;
-//    }
-
 }
 
