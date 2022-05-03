@@ -1,22 +1,21 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.chriscarini.jetbrains.locchangecountdetector.git.GitNumStat;
 import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.vcs.VcsException;
-import git4idea.commands.Git;
 import git4idea.commands.GitCommand;
-import git4idea.commands.GitLineHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.Objects;
 
 public class LoCService {
 
+    private static final GitNumStat GIT_DIFF_NUMSTAT = new GitNumStat(GitCommand.DIFF);
+    private static final GitNumStat GIT_SHOW_NUMSTAT = new GitNumStat(GitCommand.SHOW);
     private Integer loc = 0;
     private Integer files = 0;
     private Integer locInCommit = 0;
@@ -32,94 +31,12 @@ public class LoCService {
         this.project = project;
     }
 
-    private Pair<Integer, Integer> getGitShowStat() {
-        String filesChanged = "";
-        int loc = 0;
-
-        try {
-            final String lines = getDiffShowStat();
-            final String[] linesArray = lines.split("\n");
-            final String lastLine = linesArray[linesArray.length - 1];
-
-            final String[] lastArray = lastLine.split(",");
-            if (lastArray.length == 0 || Objects.equals(lastArray[0], "")) {
-                return new Pair<>(0, 0);
-            }
-
-            final String[] filesAddDel = lastArray[0].split(" ");
-            if (filesAddDel.length == 0) {
-                return new Pair<>(0, 0);
-            }
-            filesChanged = filesAddDel[1];
-            int additions = 0;
-            int deletions = 0;
-            String[] secondLine = lastArray[1].split(" ");
-            if (secondLine[2].equals("insertions(+)")) {
-                additions = Integer.parseInt(secondLine[1]);
-                if (lastArray.length == 3) {
-                    String[] thirdLine = lastArray[2].split(" ");
-                    deletions = Integer.parseInt(thirdLine[1]);
-                }
-            } else {
-                deletions = Integer.parseInt(secondLine[1]);
-            }
-
-            loc = additions + deletions;
-        } catch (VcsException e) {
-            e.printStackTrace();
-        }
-
-        return new Pair<>(loc, Integer.valueOf(filesChanged));
+    private Pair<Integer, Integer> getGitShowHeadNumStat() {
+        return GIT_SHOW_NUMSTAT.compute(project).toPair();
     }
 
-    private Pair<Integer, Integer> getGitDiffNumStat() {
-
-        int filesChanged = 0;
-        int additions = 0;
-        int deletions = 0;
-
-        try {
-            final String line = getDiffNumStat();
-
-            final String[] lineSplit = line.split("\t");
-            if (lineSplit.length == 0 || Objects.equals(lineSplit[0], "")) {
-                return new Pair<>(0, 0);
-            }
-            filesChanged += 1;
-            additions += Integer.parseInt(lineSplit[0]);
-            deletions += Integer.parseInt(lineSplit[1]);
-        } catch (VcsException e) {
-            e.printStackTrace();
-        }
-
-        return new Pair<>(additions + deletions, filesChanged);
-    }
-
-    private String getDiffNumStat() throws VcsException {
-        final String basePath = project.getBasePath();
-        if (basePath == null) {
-            return "0";
-        }
-        GitLineHandler handler = new GitLineHandler(project, new File(basePath), GitCommand.DIFF);
-        handler.setSilent(true);
-        handler.setStdoutSuppressed(true);
-        handler.addParameters("HEAD");
-        //noinspection SpellCheckingInspection
-        handler.addParameters("--numstat");
-
-        return Git.getInstance().runCommand(handler).getOutputOrThrow();
-    }
-
-    private String getDiffShowStat() throws VcsException {
-        final String basePath = project.getBasePath();
-        if (basePath == null) {
-            return "0";
-        }
-        GitLineHandler handler = new GitLineHandler(project, new File(basePath), GitCommand.SHOW);
-        handler.setSilent(true);
-        handler.setStdoutSuppressed(true);
-        handler.addParameters("--stat");
-        return Git.getInstance().runCommand(handler).getOutputOrThrow();
+    private Pair<Integer, Integer> getGitDiffHeadNumStat() {
+        return GIT_DIFF_NUMSTAT.compute(project).toPair();
     }
 
     public void computeLoCInfo() {
@@ -135,8 +52,8 @@ public class LoCService {
                             return;
                         }
 
-                        final Pair<Integer, Integer> info = getGitDiffNumStat();
-                        final Pair<Integer, Integer> infoInHeadCommit = getGitShowStat();
+                        final Pair<Integer, Integer> info = getGitDiffHeadNumStat();
+                        final Pair<Integer, Integer> infoInHeadCommit = getGitShowHeadNumStat();
 
                         LoCService.getInstance(myProject).setFiles(info.second);
                         LoCService.getInstance(myProject).setLoc(info.first);
