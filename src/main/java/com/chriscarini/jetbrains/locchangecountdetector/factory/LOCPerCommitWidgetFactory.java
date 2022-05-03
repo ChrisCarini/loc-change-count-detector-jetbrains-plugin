@@ -19,9 +19,8 @@ public class LOCPerCommitWidgetFactory implements LOCBaseWidgetFactory {
     }
 
     @Override
-    public @NotNull StatusBarWidget createWidget(@NotNull Project project) {
+    public @NotNull StatusBarWidget getWidget(@NotNull Project project) {
         return new LOCCountWidgetText(project);
     }
-
 }
 

@@ -19,16 +19,13 @@ public class LOCWidgetIcon extends EditorBasedWidget implements StatusBarWidget,
 
     public static final String ID = "LoCIcon";
 
-    private final LoCService locService;
-
     public LOCWidgetIcon(@NotNull Project project) {
         super(project);
-        locService = LoCService.getInstance(this.myProject);
     }
 
     @Override
     public @Nullable Icon getIcon() {
-        final int changeCount = locService.getChangeCount();
+        final int changeCount = LoCService.getInstance(myProject).getChangeCount();
 
         if (changeCount >= 500) {
             return LoCCOPIcons.LoCCOP_Error;
@@ -45,16 +42,16 @@ public class LOCWidgetIcon extends EditorBasedWidget implements StatusBarWidget,
         return ID;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        return Utils.generateToolTipText(locService);
+        return Utils.generateToolTipText(LoCService.getInstance(myProject));
     }
 
     @Override
     public @Nullable Consumer<MouseEvent> getClickConsumer() {
         return null;
     }
-
 
     @Override
     public @Nullable WidgetPresentation getPresentation() {

@@ -115,5 +115,4 @@ public class GitNumStat {
             return new Pair<>(this.getAddedLines() + this.getDeletedLines(), this.getFilesChanged());
         }
     }
-
 }
