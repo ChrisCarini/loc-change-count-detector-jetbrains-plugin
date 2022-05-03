@@ -14,6 +14,7 @@ import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.IdeFrame;
 import com.intellij.util.Consumer;
+import org.apache.commons.lang3.StringUtils;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +26,13 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
+    @NonNls
+    private static final String TRIMMED_STACKTRACE_MARKER = "\n\n<TRIMMED STACKTRACE>";
+
     @Override
     public @NlsActions.ActionText @NotNull String getReportActionText() {
         return "\uD83D\uDC1B " + Messages.message("loc.github.error.report.submitter.report.action.text");
@@ -52,18 +58,10 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
             // contains information entered by user - "Please fill in any details that may be important..." field
             final String userProvidedInformation = additionalInfo != null ? additionalInfo : Messages.message("loc.github.error.report.submitter.user.did.not.enter.any.detailed.information");
 
-            final String title = generateIssueSummary(simpleErrorMessage, stackTrace);
-            final String body = generateIssueDescription(userProvidedInformation, stackTrace);
+            final String title = StringUtils.abbreviate(generateIssueSummary(simpleErrorMessage, stackTrace), 120);
+            final String body = generateIssueDescription(userProvidedInformation, stackTrace, 6500);
 
-            final String encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8);
-            final String encodedBody = URLEncoder.encode(body, StandardCharsets.UTF_8);
-            String url = String.join("",
-                    "https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/issues/new",
-                    "?labels=bug",
-                    "&title=" + encodedTitle,
-                    "&body=" + encodedBody
-            );
-            Desktop.getDesktop().browse(URI.create(url));
+            Desktop.getDesktop().browse(URI.create(buildUrl(title, body)));
 
             consumer.consume(new SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.NEW_ISSUE));
             return true;
@@ -71,6 +69,16 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
             consumer.consume(new SubmittedReportInfo(SubmittedReportInfo.SubmissionStatus.FAILED));
             return false;
         }
+    }
+
+    @NotNull
+    private @NonNls String buildUrl(@NotNull final String title, @NotNull final String body) {
+        return String.join("",
+                "https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/issues/new", //  84 chars
+                "?labels=bug",                                                                                    //  11 chars
+                "&title=" + URLEncoder.encode(title, StandardCharsets.UTF_8),                                     //   7 chars + encoded title (max 120 chars)
+                "&body=" + URLEncoder.encode(body, StandardCharsets.UTF_8)                                        //   6 chars + encoded body (max 6500 chars)
+        );
     }
 
     @NonNls
@@ -100,8 +108,14 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
 
 
     @NotNull
-    private String generateIssueDescription(@NotNull final String userDescription, @NotNull final String stackTrace) {
-        return String.format(MAIN_GITHUB_DESCRIPTION_FORMAT, userDescription, stackTrace, getDefaultHelpBlock());
+    private String generateIssueDescription(@NotNull final String userDescription, @NotNull final String stackTrace, int maxLength) {
+        final String defaultHelpBlock = getDefaultHelpBlock();
+        final String abbreviatedStackTrace = StringUtils.abbreviate(
+                stackTrace,
+                TRIMMED_STACKTRACE_MARKER,
+                maxLength - defaultHelpBlock.length() - userDescription.length()
+        );
+        return String.format(MAIN_GITHUB_DESCRIPTION_FORMAT, userDescription, abbreviatedStackTrace, defaultHelpBlock);
     }
 
     /**
@@ -111,9 +125,20 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
      */
     private String getDefaultHelpBlock() {
         final String generalTroubleshootingInformation = new CompositeGeneralTroubleInfoCollector().collectInfo(getLastFocusedOrOpenedProject());
-        return String.join("\n", List.of(
-                String.format(wrapGitHubCode(generalTroubleshootingInformation.trim()))
-        ));
+
+        final String trimmedGeneralTroubleshootingInformation = (
+                Stream.of(generalTroubleshootingInformation.split("\n"))
+                        .takeWhile((@NonNls String s) -> !"=== System ===".equals(s)) // Take everything before the "System" section; we want it.
+                        .filter((@NonNls String s) -> !s.startsWith("idea."))         // Filter out the `idea.<>.path` lines, as we don't want them
+                        .collect(Collectors.joining("\n"))
+        ) + "\n" + (
+                Stream.of(generalTroubleshootingInformation.split("\n"))
+                        .dropWhile((@NonNls String s) -> !"=== Plugins ===".equals(s)) // Skip everything before the "Plugins" section; we grabbed that in the stream above.
+                        .takeWhile((@NonNls String s) -> !"=== Project ===".equals(s)) // Skip the "Project" section; we don't want that.
+                        .collect(Collectors.joining("\n"))
+        );
+
+        return wrapGitHubCode(trimmedGeneralTroubleshootingInformation.trim());
     }
 
     /**
@@ -133,6 +158,4 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
         }
         return project;
     }
-
-
 }

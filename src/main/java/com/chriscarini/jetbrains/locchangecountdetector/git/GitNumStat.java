@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class GitNumStat {
     private static final @NonNls Logger LOG = Logger.getInstance(GitNumStat.class);
+
     private final GitCommand myGitCommand;
 
     public GitNumStat(@NotNull final GitCommand gitCommand) {
