@@ -1,5 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector.git;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vcs.VcsException;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class GitNumStat {
+    private static final @NonNls Logger LOG = Logger.getInstance(GitNumStat.class);
+
     private final GitCommand myGitCommand;
 
     public GitNumStat(@NotNull final GitCommand gitCommand) {
@@ -41,6 +44,7 @@ public class GitNumStat {
         //noinspection SpellCheckingInspection
         handler.addParameters("--numstat");
         handler.addParameters("--format=oneline");
+        LOG.debug(String.format("Running %s command on %s", handler, project.getName()));
         return Git.getInstance().runCommand(handler).getOutputOrThrow();
     }
 
