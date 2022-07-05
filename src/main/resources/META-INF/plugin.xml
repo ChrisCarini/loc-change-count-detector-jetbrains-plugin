@@ -10,6 +10,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <projectService
+        serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.ChangeThresholdService"/>
+    <projectService
         preload="true"
         serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
     <statusBarWidgetFactory id="LoCCounter"

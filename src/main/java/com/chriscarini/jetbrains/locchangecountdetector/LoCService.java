@@ -218,56 +218,12 @@ public class LoCService implements Disposable {
 
     @NotNull
     public Double getReviewTime(int loc) {
-        // Hard code these value by getting them from our GitHub dashboards
-        double reviewHoursXS = 21600 / 3600;
-        double reviewHoursS = 23400 / 3600;
-        double reviewHoursM = 27000 / 3600;
-        double reviewHoursL = 36000 / 3600;
-        double reviewHoursXL = 45000 / 3600;
-        double reviewHoursXXL = 54000 / 3600;
-        double reviewTime;
-
-        if (loc >= 0 && loc <= 9) {
-            reviewTime = reviewHoursXS;
-        } else if (loc >= 10 && loc <= 29) {
-            reviewTime = reviewHoursS;
-        } else if (loc >= 30 && loc <= 99) {
-            reviewTime = reviewHoursM;
-        } else if (loc >= 100 && loc <= 499) {
-            reviewTime = reviewHoursL;
-        } else if (loc >= 500 && loc <= 999) {
-            reviewTime = reviewHoursXL;
-        } else {
-            reviewTime = reviewHoursXXL;
-        }
-        return reviewTime;
+        return ChangeThresholdService.getInstance(project).getReviewTime(loc);
     }
 
     @NotNull
     public Double getApprovalTime(int loc) {
-        // Hard code these value by getting them from our GitHub dashboards
-        double approvalHoursXS = 28800 / 3600;
-        double approvalHoursS = 36000 / 3600;
-        double approvalHoursM = 54000 / 3600;
-        double approvalHoursL = 90000 / 3600;
-        double approvalHoursXL = 108000 / 3600;
-        double approvalHoursXXL = 126000 / 3600;
-        double approvalTime;
-
-        if (loc >= 0 && loc <= 9) {
-            approvalTime = approvalHoursXS;
-        } else if (loc >= 10 && loc <= 29) {
-            approvalTime = approvalHoursS;
-        } else if (loc >= 30 && loc <= 99) {
-            approvalTime = approvalHoursM;
-        } else if (loc >= 100 && loc <= 499) {
-            approvalTime = approvalHoursL;
-        } else if (loc >= 500 && loc <= 999) {
-            approvalTime = approvalHoursXL;
-        } else {
-            approvalTime = approvalHoursXXL;
-        }
-        return approvalTime;
+        return ChangeThresholdService.getInstance(project).getApprovalTime(loc);
     }
 
     @Override
