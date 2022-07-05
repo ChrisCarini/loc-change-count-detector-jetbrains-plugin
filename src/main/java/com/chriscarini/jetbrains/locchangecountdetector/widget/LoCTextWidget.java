@@ -14,11 +14,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.event.MouseEvent;
 
-public class LOCCountWidgetText extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation {
+public class LoCTextWidget extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.TextPresentation {
 
     public static final String ID = "LoCCounter";
 
-    public LOCCountWidgetText(@NotNull Project project) {
+    public LoCTextWidget(@NotNull Project project) {
         super(project);
     }
 

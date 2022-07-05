@@ -6,6 +6,7 @@
 ### Added
 
 ### Changed
+- Renaming widget and factory classes (#51)
 
 ### Deprecated
 

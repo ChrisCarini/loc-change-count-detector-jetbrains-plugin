@@ -13,7 +13,7 @@
         preload="true"
         serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
     <statusBarWidgetFactory id="LoCCounter"
-                            implementation="com.chriscarini.jetbrains.locchangecountdetector.factory.LOCPerCommitWidgetFactory"
+                            implementation="com.chriscarini.jetbrains.locchangecountdetector.factory.LoCTextWidgetFactory"
                             order="before positionWidget, after LoCIcon"/>
     <statusBarWidgetFactory id="LoCIcon"
                             implementation="com.chriscarini.jetbrains.locchangecountdetector.factory.LOCIconWidgetFactory"
