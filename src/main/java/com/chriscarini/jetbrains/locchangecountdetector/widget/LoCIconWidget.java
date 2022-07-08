@@ -1,8 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector.widget;
 
-import com.chriscarini.jetbrains.locchangecountdetector.LoCCOPIcons;
-import com.chriscarini.jetbrains.locchangecountdetector.LoCService;
-import com.chriscarini.jetbrains.locchangecountdetector.Utils;
+import com.chriscarini.jetbrains.locchangecountdetector.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.wm.StatusBarWidget;
@@ -27,11 +25,13 @@ public class LoCIconWidget extends EditorBasedWidget implements StatusBarWidget,
     public @Nullable Icon getIcon() {
         final int changeCount = LoCService.getInstance(myProject).getChangeCount();
 
-        if (changeCount >= 500) {
+        final ChangeThresholdIconInfo thresholdIconInfo = ChangeThresholdService.getInstance(myProject).getChangeThresholdIconInfo();
+
+        if (thresholdIconInfo.isError(changeCount)) {
             return LoCCOPIcons.LoCCOP_Error;
-        } else if (changeCount >= 450) {
+        } else if (thresholdIconInfo.isWarn(changeCount)) {
             return LoCCOPIcons.LoCCOP_Warning;
-        } else if (changeCount >= 400) {
+        } else if (thresholdIconInfo.isInfo(changeCount)) {
             return LoCCOPIcons.LoCCOP_Info;
         }
         return LoCCOPIcons.LoCCOP;
