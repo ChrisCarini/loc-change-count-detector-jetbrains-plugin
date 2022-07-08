@@ -1,7 +1,7 @@
 package com.chriscarini.jetbrains.locchangecountdetector.factory;
 
 import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
-import com.chriscarini.jetbrains.locchangecountdetector.widget.LOCWidgetIcon;
+import com.chriscarini.jetbrains.locchangecountdetector.widget.LoCIconWidget;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.StatusBarWidget;
 import org.jetbrains.annotations.NonNls;
@@ -15,12 +15,12 @@ public class LOCIconWidgetFactory implements LOCBaseWidgetFactory {
 
     @Override
     public @NonNls @NotNull String getId() {
-        return LOCWidgetIcon.ID;
+        return LoCIconWidget.ID;
     }
 
     @Override
     public @NotNull StatusBarWidget getWidget(@NotNull Project project) {
-        return new LOCWidgetIcon(project);
+        return new LoCIconWidget(project);
     }
 }
 

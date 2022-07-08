@@ -13,11 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 
-public class LOCWidgetIcon extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.IconPresentation {
+public class LoCIconWidget extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.IconPresentation {
 
     public static final String ID = "LoCIcon";
 
-    public LOCWidgetIcon(@NotNull Project project) {
+    public LoCIconWidget(@NotNull Project project) {
         super(project);
     }
 
