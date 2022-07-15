@@ -6,7 +6,6 @@
 ### Added
 
 ### Changed
-- Renaming widget and factory classes (#51)
 
 ### Deprecated
 
@@ -15,6 +14,11 @@
 ### Fixed
 
 ### Security
+
+## [0.0.3] - 2022-07-15
+### Changed
+- Renaming widget and factory classes (#51)
+    - This enables other plugins to set a dependency on `ChrisCarini/loc-change-count-detector-jetbrains-plugin` (e.g. https://github.com/ChrisCarini/example-loc-plugin-config-plugin/pull/1) to configure the thresholds.
 
 ## [0.0.2] - 2022-05-06
 ### Added
