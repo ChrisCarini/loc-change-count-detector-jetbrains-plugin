@@ -1,5 +1,6 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.factory.LOCBaseWidgetFactory;
 import com.chriscarini.jetbrains.locchangecountdetector.git.GitNumStat;
 import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
@@ -37,11 +38,7 @@ public class LoCService implements Disposable {
     public static final String NOTIFICATION_GROUP = "LoCCOPNotification";
     private static final GitNumStat GIT_DIFF_NUMSTAT = new GitNumStat(GitCommand.DIFF);
     private static final GitNumStat GIT_SHOW_NUMSTAT = new GitNumStat(GitCommand.SHOW);
-    private Integer loc = 0;
-    private Integer files = 0;
-    private Integer locInCommit = 0;
-    private Integer filesInCommit = 0;
-
+    private ChangeInfo changeInfo;
     private final MergingUpdateQueue myQueue;
 
     private Notification existingNotification;
@@ -99,11 +96,12 @@ public class LoCService implements Disposable {
                 final Pair<Integer, Integer> info = getGitDiffHeadNumStat();
                 final Pair<Integer, Integer> infoInHeadCommit = getGitShowHeadNumStat();
 
-                LoCService.getInstance(myProject).setFiles(info.second);
-                LoCService.getInstance(myProject).setLoc(info.first);
+                final ChangeInfo changeInfo = new ChangeInfo.Builder()
+                        .setModifiedStagedChanges(info)
+                        .setHeadCommitChanges(infoInHeadCommit)
+                        .build();
 
-                LoCService.getInstance(myProject).setFilesInCommit(infoInHeadCommit.second);
-                LoCService.getInstance(myProject).setLocInCommit(infoInHeadCommit.first);
+                LoCService.getInstance(myProject).setChangeInfo(changeInfo);
 
                 // Queue UI updates to LoC widgets
                 myQueue.queue(Update.create(LOCBaseWidgetFactory.class, () -> {
@@ -124,7 +122,7 @@ public class LoCService implements Disposable {
         // Clear any existing notification, the number is likely different.
         clearExistingNotification();
 
-        final Integer changeCount = this.getChangeCount();
+        final Integer changeCount = this.getChangeInfo().getLoc();
 
         // TODO(ccarini) - Perhaps expose the `500` limit as a configuration option.
         // If the LoC change is less than 500, we have no need/desire for a notification, skip...
@@ -181,39 +179,12 @@ public class LoCService implements Disposable {
     }
 
     @NotNull
-    public Integer getChangeCount() {
-        return Objects.requireNonNullElse(loc, 0);
+    public ChangeInfo getChangeInfo() {
+        return changeInfo;
     }
 
-    @NotNull
-    public Integer getFileCount() {
-        return Objects.requireNonNullElse(files, 0);
-    }
-
-    @NotNull
-    public Integer getChangeCountInCommit() {
-        return Objects.requireNonNullElse(locInCommit, 0);
-    }
-
-    @NotNull
-    public Integer getFileCountInCommit() {
-        return Objects.requireNonNullElse(filesInCommit, 0);
-    }
-
-    private void setLoc(@NotNull final Integer loc) {
-        this.loc = loc;
-    }
-
-    private void setFiles(@NotNull final Integer files) {
-        this.files = files;
-    }
-
-    private void setLocInCommit(@NotNull final Integer loc) {
-        this.locInCommit = loc;
-    }
-
-    private void setFilesInCommit(@NotNull final Integer files) {
-        this.filesInCommit = files;
+    public void setChangeInfo(ChangeInfo changeInfo) {
+        this.changeInfo = changeInfo;
     }
 
     @NotNull

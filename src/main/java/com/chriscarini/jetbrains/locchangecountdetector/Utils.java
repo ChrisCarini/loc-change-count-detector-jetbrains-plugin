@@ -12,8 +12,8 @@ public final class Utils {
     }
 
     public static @Nls @NotNull String generateToolTipText(@NotNull final LoCService myService) {
-        int files = myService.getFileCount();
-        int lines = myService.getChangeCount();
+        int files = myService.getChangeInfo().getFiles();
+        int lines = myService.getChangeInfo().getLoc();
 
         final StringJoiner sj = new StringJoiner("<br/>");
 
@@ -24,11 +24,11 @@ public final class Utils {
                 String.format("%.1f", myService.getApprovalTime(lines))
         ));
 
-        sj.add(Messages.message("loc.tooltip.text.diff.local.and.previous", myService.getChangeCountInCommit()));
+        sj.add(Messages.message("loc.tooltip.text.diff.local.and.previous", myService.getChangeInfo().getLocInCommit()));
 
         sj.add(Messages.message("loc.tooltip.text.diff.staging.and.previous", lines));
 
-        sj.add(Messages.message("loc.tooltip.text.files.in.local.diff", myService.getFileCountInCommit()));
+        sj.add(Messages.message("loc.tooltip.text.files.in.local.diff", myService.getChangeInfo().getFilesInCommit()));
 
         sj.add(Messages.message("loc.tooltip.text.files.in.staging.diff", files));
 

@@ -1,4 +1,4 @@
-package com.chriscarini.jetbrains.locchangecountdetector;
+package com.chriscarini.jetbrains.locchangecountdetector.data;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
