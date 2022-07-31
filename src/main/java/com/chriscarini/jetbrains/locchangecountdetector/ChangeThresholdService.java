@@ -38,19 +38,26 @@ public class ChangeThresholdService implements Disposable {
 
     public ChangeThresholdService(@NotNull final Project project) {
         this.project = project;
-        setChangeThresholdTimeInfos(DEFAULT_CHANGE_THRESHOLD_INFO);
-        setChangeThresholdIconInfo(DEFAULT_CHANGE_THRESHOLD_ICON_INFO);
+        changeThresholdTimeInfos(DEFAULT_CHANGE_THRESHOLD_INFO);
+        changeThresholdIconInfo(DEFAULT_CHANGE_THRESHOLD_ICON_INFO);
     }
 
-    public void setChangeThresholdTimeInfos(List<ChangeThresholdTimeInfo> changeThresholdTimeInfos) {
+
+    // Unused in *this* plugin. For use by consuming plugins that wish to chain methods in this service.
+    @SuppressWarnings("UnusedReturnValue")
+    public ChangeThresholdService changeThresholdTimeInfos(@NotNull final List<ChangeThresholdTimeInfo> changeThresholdTimeInfos) {
         LOG.debug("Setting Change Thresholds for %s", project.getName());
         this.changeThresholdTimeInfos = changeThresholdTimeInfos;
         this.changeThresholdTimeInfos.sort(Comparator.comparingInt(ChangeThresholdTimeInfo::getThreshold));
+        return this;
     }
 
-    public void setChangeThresholdIconInfo(ChangeThresholdIconInfo changeThresholdIconInfo) {
+    // Unused in *this* plugin. For use by consuming plugins that wish to chain methods in this service.
+    @SuppressWarnings("UnusedReturnValue")
+    public ChangeThresholdService changeThresholdIconInfo(@NotNull final ChangeThresholdIconInfo changeThresholdIconInfo) {
         LOG.debug("Setting Change Threshold Icon Info for %s", project.getName());
         this.changeThresholdIconInfo = changeThresholdIconInfo;
+        return this;
     }
 
     @NotNull
