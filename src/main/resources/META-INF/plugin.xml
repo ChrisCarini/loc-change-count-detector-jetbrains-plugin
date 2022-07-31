@@ -14,6 +14,8 @@
     <projectService
         preload="true"
         serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
+    <projectConfigurable
+            instance="com.chriscarini.jetbrains.locchangecountdetector.settings.SettingsConfigurable"/>
     <statusBarWidgetFactory id="LoCCounter"
                             implementation="com.chriscarini.jetbrains.locchangecountdetector.factory.LoCTextWidgetFactory"
                             order="before positionWidget, after LoCIcon"/>
