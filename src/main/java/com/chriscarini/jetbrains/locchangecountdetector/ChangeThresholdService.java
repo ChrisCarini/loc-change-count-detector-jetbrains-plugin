@@ -2,16 +2,19 @@ package com.chriscarini.jetbrains.locchangecountdetector;
 
 import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdIconInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdTimeInfo;
+import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeInfo;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ChangeThresholdService implements Disposable {
     private static final @NonNls Logger LOG = Logger.getInstance(ChangeThresholdService.class);
@@ -32,6 +35,11 @@ public class ChangeThresholdService implements Disposable {
     private List<ChangeThresholdTimeInfo> changeThresholdTimeInfos;
     private ChangeThresholdIconInfo changeThresholdIconInfo;
 
+    @Nullable
+    private Consumer<ChangeInfo> notificationCallback;
+    @Nullable
+    private Consumer<ChangeInfo> createCommitActionCallback;
+
     public static ChangeThresholdService getInstance(@NotNull final Project project) {
         return project.getService(ChangeThresholdService.class);
     }
@@ -40,6 +48,8 @@ public class ChangeThresholdService implements Disposable {
         this.project = project;
         changeThresholdTimeInfos(DEFAULT_CHANGE_THRESHOLD_INFO);
         changeThresholdIconInfo(DEFAULT_CHANGE_THRESHOLD_ICON_INFO);
+        notificationCallback = null;
+        createCommitActionCallback = null;
     }
 
 
@@ -90,6 +100,30 @@ public class ChangeThresholdService implements Disposable {
 
     public ChangeThresholdIconInfo getChangeThresholdIconInfo() {
         return this.changeThresholdIconInfo;
+    }
+
+    // Unused in *this* plugin. For use by consuming plugins that wish to set a callback function.
+    @SuppressWarnings("unused")
+    public ChangeThresholdService withNotificationCallback(@Nullable final Consumer<ChangeInfo> notificationCallback) {
+        this.notificationCallback = notificationCallback;
+        return this;
+    }
+
+    // Unused in *this* plugin. For use by consuming plugins that wish to set a callback function.
+    @SuppressWarnings("unused")
+    public ChangeThresholdService withCreateCommitActionCallback(@Nullable final Consumer<ChangeInfo> createCommitActionCallback) {
+        this.createCommitActionCallback = createCommitActionCallback;
+        return this;
+    }
+
+    @Nullable
+    public Consumer<ChangeInfo> getNotificationCallback() {
+        return notificationCallback;
+    }
+
+    @Nullable
+    public Consumer<ChangeInfo> getCreateCommitActionCallback() {
+        return createCommitActionCallback;
     }
 
     @Override

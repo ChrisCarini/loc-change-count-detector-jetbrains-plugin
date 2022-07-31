@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 ### Added
+- Adding callback consumers for showing notification & invoking 'create commit' action
 
 ### Changed
 
