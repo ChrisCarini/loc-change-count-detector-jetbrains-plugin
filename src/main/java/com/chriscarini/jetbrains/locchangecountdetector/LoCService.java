@@ -38,7 +38,7 @@ public class LoCService implements Disposable {
     public static final String NOTIFICATION_GROUP = "LoCCOPNotification";
     private static final GitNumStat GIT_DIFF_NUMSTAT = new GitNumStat(GitCommand.DIFF);
     private static final GitNumStat GIT_SHOW_NUMSTAT = new GitNumStat(GitCommand.SHOW);
-    private ChangeInfo changeInfo;
+    private ChangeInfo changeInfo = new ChangeInfo();
     private final MergingUpdateQueue myQueue;
 
     private Notification existingNotification;
@@ -86,10 +86,6 @@ public class LoCService implements Disposable {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 if (myProject == null) {
-                    return;
-                }
-                final String projectPath = myProject.getBasePath();
-                if (projectPath == null) {
                     return;
                 }
 

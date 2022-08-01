@@ -15,6 +15,10 @@ public class ChangeInfo {
     private final Integer locInCommit;
     private final Integer filesInCommit;
 
+    public ChangeInfo() {
+        this(0, 0, 0, 0);
+    }
+
     public ChangeInfo(
             @NotNull final Integer loc,
             @NotNull final Integer files,
