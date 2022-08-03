@@ -25,4 +25,16 @@ public class ChangeThresholdIconInfo {
     public boolean isInfo(int loc) {
         return loc >= infoAbove;
     }
+
+    public int getErrorAbove() {
+        return errorAbove;
+    }
+
+    public int getWarnAbove() {
+        return warnAbove;
+    }
+
+    public int getInfoAbove() {
+        return infoAbove;
+    }
 }
