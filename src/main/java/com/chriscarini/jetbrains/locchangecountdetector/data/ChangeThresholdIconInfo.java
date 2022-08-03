@@ -1,4 +1,4 @@
-package com.chriscarini.jetbrains.locchangecountdetector;
+package com.chriscarini.jetbrains.locchangecountdetector.data;
 
 /**
  * Wrapper class to contain the thresholds for displaying icons for 'error', 'warn', and 'info'.

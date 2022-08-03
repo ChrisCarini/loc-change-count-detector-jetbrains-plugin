@@ -62,6 +62,12 @@ public class LoCTextWidget extends EditorBasedWidget implements StatusBarWidget,
     @NotNull
     private String getChangeText() {
         final LoCService service = LoCService.getInstance(myProject);
-        return String.format("%d/%d::%s/%s", service.getChangeCountInCommit(), service.getChangeCount(), service.getFileCountInCommit(), service.getFileCount());
+        return String.format(
+                "%d/%d::%s/%s",
+                service.getChangeInfo().getLocInCommit(),
+                service.getChangeInfo().getLoc(),
+                service.getChangeInfo().getFilesInCommit(),
+                service.getChangeInfo().getFiles()
+        );
     }
 }

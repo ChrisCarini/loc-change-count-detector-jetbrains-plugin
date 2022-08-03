@@ -1,8 +1,8 @@
 package com.chriscarini.jetbrains.locchangecountdetector.settings;
 
-import com.chriscarini.jetbrains.locchangecountdetector.ChangeThresholdIconInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.ChangeThresholdService;
-import com.chriscarini.jetbrains.locchangecountdetector.ChangeThresholdTimeInfo;
+import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdIconInfo;
+import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdTimeInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.options.Configurable;
