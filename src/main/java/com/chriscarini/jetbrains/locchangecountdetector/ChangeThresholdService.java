@@ -1,8 +1,8 @@
 package com.chriscarini.jetbrains.locchangecountdetector;
 
+import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdIconInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdTimeInfo;
-import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeInfo;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
