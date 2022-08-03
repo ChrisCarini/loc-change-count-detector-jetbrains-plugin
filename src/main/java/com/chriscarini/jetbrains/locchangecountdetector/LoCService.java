@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class LoCService implements Disposable {
     private static final @NonNls Logger LOG = Logger.getInstance(LoCService.class);
@@ -137,6 +138,16 @@ public class LoCService implements Disposable {
                 .addAction(new CreateCommitAction(project));
         notification.notify(project);
         existingNotification = notification;
+
+        final Consumer<ChangeInfo> notificationCallback = ChangeThresholdService.getInstance(project).getNotificationCallback();
+        if (notificationCallback != null) {
+            runCallback(notificationCallback);
+        }
+    }
+
+    private void runCallback(@NotNull final Consumer<ChangeInfo> callback) {
+        final LoCService service = LoCService.getInstance(project);
+        callback.accept(service.changeInfo);
     }
 
     private void clearExistingNotification() {
@@ -160,6 +171,11 @@ public class LoCService implements Disposable {
             final CommonCheckinProjectAction f = new CommonCheckinProjectAction();
             //noinspection UnstableApiUsage
             f.actionPerformed(e);
+
+            final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
+            if (callback != null) {
+                LoCService.getInstance(myProject).runCallback(callback);
+            }
 
             // Give a final notification
             NotificationGroupManager.getInstance()
