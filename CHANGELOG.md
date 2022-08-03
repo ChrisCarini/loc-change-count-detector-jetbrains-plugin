@@ -4,8 +4,6 @@
 
 ## [Unreleased]
 ### Added
-- Adding callback consumers for showing notification & invoking 'create commit' action
-- Adding SettingsConfigurable for viewing the various thresholds
 
 ### Changed
 
@@ -16,6 +14,11 @@
 ### Fixed
 
 ### Security
+
+## [0.0.5] - 2022-08-03
+### Added
+- Adding callback consumers for showing notification & invoking 'create commit' action
+- Adding SettingsConfigurable for viewing the various thresholds
 
 ## [0.0.4] - 2022-07-29
 ### Changed
