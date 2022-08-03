@@ -81,6 +81,10 @@ public class ChangeThresholdService implements Disposable {
         return changeThresholdTimeInfo;
     }
 
+    public List<ChangeThresholdTimeInfo> getChangeThresholdTimeInfos() {
+        return changeThresholdTimeInfos;
+    }
+
     public ChangeThresholdIconInfo getChangeThresholdIconInfo() {
         return this.changeThresholdIconInfo;
     }
