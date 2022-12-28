@@ -19,7 +19,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.vcs.actions.CommonCheckinProjectAction;
+import com.intellij.openapi.vcs.actions.commit.CommonCheckinProjectAction;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
@@ -169,7 +169,6 @@ public class LoCService implements Disposable {
         public void actionPerformed(@NotNull AnActionEvent e) {
             // Pull up the commit dialog...
             final CommonCheckinProjectAction f = new CommonCheckinProjectAction();
-            //noinspection UnstableApiUsage
             f.actionPerformed(e);
 
             final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
