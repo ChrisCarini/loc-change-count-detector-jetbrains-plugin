@@ -27,9 +27,9 @@ public class LoCIconWidget extends EditorBasedWidget implements StatusBarWidget,
 
     @Override
     public @Nullable Icon getIcon() {
-        final int changeCount = LoCService.getInstance(myProject).getChangeInfo().getLoc();
+        final int changeCount = LoCService.getInstance(getProject()).getChangeInfo().getLoc();
 
-        final ChangeThresholdIconInfo thresholdIconInfo = ChangeThresholdService.getInstance(myProject).getChangeThresholdIconInfo();
+        final ChangeThresholdIconInfo thresholdIconInfo = ChangeThresholdService.getInstance(getProject()).getChangeThresholdIconInfo();
 
         if (thresholdIconInfo.isError(changeCount)) {
             return LoCCOPIcons.LoCCOP_Error;
@@ -49,12 +49,7 @@ public class LoCIconWidget extends EditorBasedWidget implements StatusBarWidget,
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        return Utils.generateToolTipText(LoCService.getInstance(myProject));
-    }
-
-    @Override
-    public @Nullable Consumer<MouseEvent> getClickConsumer() {
-        return null;
+        return Utils.generateToolTipText(LoCService.getInstance(getProject()));
     }
 
     @Override

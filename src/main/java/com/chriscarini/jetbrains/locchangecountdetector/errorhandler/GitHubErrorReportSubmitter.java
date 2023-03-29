@@ -43,7 +43,7 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
             IdeaLoggingEvent @NotNull [] events,
             @Nullable String additionalInfo,
             @NotNull Component parentComponent,
-            @NotNull Consumer<? super SubmittedReportInfo> consumer
+            @SuppressWarnings("deprecation") @NotNull Consumer<? super SubmittedReportInfo> consumer
     ) {
         try {
             final IdeaLoggingEvent event = events.length > 0 ? events[0] : null;
