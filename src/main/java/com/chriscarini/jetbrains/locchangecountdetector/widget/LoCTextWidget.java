@@ -51,17 +51,12 @@ public class LoCTextWidget extends EditorBasedWidget implements StatusBarWidget,
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        return Utils.generateToolTipText(LoCService.getInstance(myProject));
-    }
-
-    @Override
-    public @Nullable Consumer<MouseEvent> getClickConsumer() {
-        return null;
+        return Utils.generateToolTipText(LoCService.getInstance(getProject()));
     }
 
     @NotNull
     private String getChangeText() {
-        final LoCService service = LoCService.getInstance(myProject);
+        final LoCService service = LoCService.getInstance(getProject());
         return String.format(
                 "%d/%d::%s/%s",
                 service.getChangeInfo().getLocInCommit(),
