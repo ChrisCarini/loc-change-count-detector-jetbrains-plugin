@@ -14,6 +14,7 @@
 ### Removed
 
 ### Fixed
+- Fix a bug where tooltips no longer render on hover.
 
 ### Security
 

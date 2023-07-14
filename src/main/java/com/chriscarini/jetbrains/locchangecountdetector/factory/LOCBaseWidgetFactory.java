@@ -46,16 +46,6 @@ public interface LOCBaseWidgetFactory extends StatusBarWidgetFactory {
     }
 
     @Override
-    default void disposeWidget(@NotNull StatusBarWidget widget) {
-        Disposer.dispose(widget);
-    }
-
-    @Override
-    default boolean canBeEnabledOn(@NotNull StatusBar statusBar) {
-        return true;
-    }
-
-    @Override
     @NonNls @NotNull String getId();
 
     @Override
