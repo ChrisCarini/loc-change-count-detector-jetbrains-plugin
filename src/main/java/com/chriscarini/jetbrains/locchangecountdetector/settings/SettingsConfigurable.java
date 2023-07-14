@@ -54,7 +54,7 @@ public class SettingsConfigurable implements Configurable {
                 .getPanel();
 
         final JPanel panel = FormBuilder.createFormBuilder()
-                .addComponent(new CollapsiblePanel(infoTables, true, true, AllIcons.General.ArrowDown,
+                .addComponent(new CollapsiblePanel(infoTables, true, false, AllIcons.General.ArrowDown,
                         AllIcons.General.ArrowRight, Messages.message("loc.settings.configurable.title.threshold.tables")))
                 .getPanel();
 

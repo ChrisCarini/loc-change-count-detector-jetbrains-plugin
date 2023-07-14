@@ -7,6 +7,7 @@
 ### Added
 
 ### Changed
+- Have the settings panel expanded by default
 
 ### Deprecated
 
