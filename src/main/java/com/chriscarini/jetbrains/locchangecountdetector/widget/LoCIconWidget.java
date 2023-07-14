@@ -3,21 +3,16 @@ package com.chriscarini.jetbrains.locchangecountdetector.widget;
 import com.chriscarini.jetbrains.locchangecountdetector.ChangeThresholdService;
 import com.chriscarini.jetbrains.locchangecountdetector.LoCCOPIcons;
 import com.chriscarini.jetbrains.locchangecountdetector.LoCService;
-import com.chriscarini.jetbrains.locchangecountdetector.Utils;
 import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeThresholdIconInfo;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NlsContexts;
 import com.intellij.openapi.wm.StatusBarWidget;
-import com.intellij.openapi.wm.impl.status.EditorBasedWidget;
-import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.MouseEvent;
 
-public class LoCIconWidget extends EditorBasedWidget implements StatusBarWidget, StatusBarWidget.IconPresentation {
+public class LoCIconWidget extends LoCBaseWidget implements StatusBarWidget.IconPresentation {
 
     public static final String ID = "LoCIcon";
 
@@ -44,16 +39,5 @@ public class LoCIconWidget extends EditorBasedWidget implements StatusBarWidget,
     @Override
     public @NonNls @NotNull String ID() {
         return ID;
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    @Override
-    public @Nullable @NlsContexts.Tooltip String getTooltipText() {
-        return Utils.generateToolTipText(LoCService.getInstance(getProject()));
-    }
-
-    @Override
-    public @Nullable WidgetPresentation getPresentation() {
-        return this;
     }
 }
