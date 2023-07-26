@@ -7,17 +7,23 @@
 ### Added
 
 ### Changed
-- Upgrading IntelliJ from 2023.1.4 to 2023.1.5
-- Have the settings panel expanded by default
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-- Fix a bug where tooltips no longer render on hover.
 
 ### Security
+
+## [0.2.5] - 2023-07-26
+
+### Changed
+- Upgrading IntelliJ from 2023.1.4 to 2023.1.5
+- Have the settings panel expanded by default
+
+### Fixed
+- Fix a bug where tooltips no longer render on hover.
 
 ## [0.2.4] - 2023-07-14
 
@@ -104,7 +110,8 @@
 - Initial Revision. Laying the foundation. It doesn't do much useful right now; this is not a released version, but
   might be one day.
 
-[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.2...v0.2.3
 [0.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.1...v0.2.2
