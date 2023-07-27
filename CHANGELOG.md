@@ -7,7 +7,6 @@
 ### Added
 
 ### Changed
-- Upgrading IntelliJ from 2023.1.5 to 2023.2.0
 
 ### Deprecated
 
@@ -16,6 +15,11 @@
 ### Fixed
 
 ### Security
+
+## [0.3.0] - 2023-07-27
+
+### Changed
+- Upgrading IntelliJ from 2023.1.5 to 2023.2.0
 
 ## [0.2.5] - 2023-07-26
 
@@ -111,7 +115,8 @@
 - Initial Revision. Laying the foundation. It doesn't do much useful right now; this is not a released version, but
   might be one day.
 
-[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.5...v0.3.0
 [0.2.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.2...v0.2.3
