@@ -62,6 +62,9 @@ public class LoCService implements Disposable {
             public void after(@NotNull List<? extends VFileEvent> events) {
                 // Recompute LoC information if one of the events is from the current project. Otherwise, ignore.
                 for (VFileEvent event : events) {
+                    if (event == null || event.getFile() == null) {
+                        continue;
+                    }
                     if (ProjectRootManager.getInstance(project).getFileIndex().isInContent(Objects.requireNonNull(event.getFile()))) {
                         LOG.debug(String.format("%s - Running LoC computation after VFS changes.", project.getName()));
                         computeLoCInfo();
