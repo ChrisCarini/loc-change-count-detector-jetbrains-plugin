@@ -57,6 +57,11 @@ public class ChangeThresholdService implements Disposable {
     @SuppressWarnings("UnusedReturnValue")
     public ChangeThresholdService changeThresholdTimeInfos(@NotNull final List<ChangeThresholdTimeInfo> changeThresholdTimeInfos) {
         LOG.debug("Setting Change Thresholds for %s", project.getName());
+        if (changeThresholdTimeInfos.isEmpty()) {
+            LOG.warn("Change Thresholds must have at least one entry (has %s). Using default thresholds.");
+            changeThresholdTimeInfos(DEFAULT_CHANGE_THRESHOLD_INFO);
+            return this;
+        }
         this.changeThresholdTimeInfos = changeThresholdTimeInfos;
         this.changeThresholdTimeInfos.sort(Comparator.comparingInt(ChangeThresholdTimeInfo::getThreshold));
         return this;
