@@ -80,8 +80,8 @@ public class SettingsConfigurable implements Configurable {
                             curThreshold == Integer.MAX_VALUE ?
                                     String.format("%s &lt; LoC", prevThreshold)
                                     : String.format("%s &lt; LoC &lt;= %s", prevThreshold, curThreshold),
-                            changeThresholdTimeInfo.getReviewTimeBizHrs(),
-                            changeThresholdTimeInfo.getApprovalTimeBizHrs()
+                            String.format("%.1f", changeThresholdTimeInfo.getReviewTimeBizHrs()),
+                            String.format("%.1f", changeThresholdTimeInfo.getApprovalTimeBizHrs())
                     )
             );
             prevThreshold = curThreshold;
