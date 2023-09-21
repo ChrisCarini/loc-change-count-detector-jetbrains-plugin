@@ -1,4 +1,26 @@
 {
   "projectName": "loc-change-count-detector-jetbrains-plugin",
-  "projectOwner": "ChrisCarini"
+  "projectOwner": "ChrisCarini",
+  "files": [
+    "README.md"
+  ],
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [
+    {
+      "login": "bansalsulabh",
+      "name": "bansalsulabh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7255818?v=4",
+      "profile": "https://github.com/bansalsulabh",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "ideas",
+        "review",
+        "userTesting"
+      ]
+    }
+  ]
 }
