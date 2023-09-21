@@ -39,6 +39,16 @@
         "review",
         "userTesting"
       ]
+    },
+    {
+      "login": "harrisjasmine",
+      "name": "Jasmine Harris",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49970768?v=4",
+      "profile": "https://github.com/harrisjasmine",
+      "contributions": [
+        "ideas",
+        "userTesting"
+      ]
     }
   ]
 }
