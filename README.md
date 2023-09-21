@@ -14,3 +14,14 @@ Smaller changes typically yield faster code reviews!
 <!-- Plugin description end -->
 
 The plugin was created purely as a PoC, and might not yield anything useful.
+
+## Configuration
+
+Use this plugin in a corporate environment?
+
+You can configure the plugin to use your own internal thresholds via a 'sidecar' configuration plugin. The 'sidecar'
+plugin can configure this plugin for all your companies projects, or configure individual projects - it is all based on
+how you decide to implement the 'sidecar' plugin.
+
+See [ChrisCarini/example-loc-plugin-config-plugin](https://github.com/ChrisCarini/example-loc-plugin-config-plugin/pulls?q=is%3Apr+is%3Aclosed+label%3A%22example+for+docs%22)
+for a reference implementation on automatic configuration.
