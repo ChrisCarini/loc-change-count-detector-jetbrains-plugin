@@ -9,6 +9,24 @@
   "contributorsPerLine": 7,
   "contributors": [
     {
+      "login": "ChrisCarini",
+      "name": "Chris Carini",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6374067?v=4",
+      "profile": "https://github.com/ChrisCarini",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "example",
+        "ideas",
+        "review",
+        "userTesting"
+        "maintenance",
+        "question",
+        "review"
+      ]
+    },
+    {
       "login": "bansalsulabh",
       "name": "bansalsulabh",
       "avatar_url": "https://avatars.githubusercontent.com/u/7255818?v=4",
