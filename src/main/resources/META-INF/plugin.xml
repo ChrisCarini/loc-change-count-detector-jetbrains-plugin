@@ -12,7 +12,6 @@
     <projectService
         serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.ChangeThresholdService"/>
     <projectService
-        preload="true"
         serviceImplementation="com.chriscarini.jetbrains.locchangecountdetector.LoCService"/>
     <projectConfigurable
             instance="com.chriscarini.jetbrains.locchangecountdetector.settings.SettingsConfigurable"/>
