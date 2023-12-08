@@ -23,4 +23,7 @@
 
 - https://github.com/zielu/GitToolBox/blob/c9dc7d2f7d77d5130288ae4d6ba3a9a8867314ba/src/main/kotlin/zielu/gittoolbox/ui/statusbar/BlameStatusBarWidgetFactory.kt
     - https://github.com/zielu/GitToolBox/blob/9f6623b1a4c0c83a75c7b74bea2a8d82f63e3c61/src/main/java/zielu/gittoolbox/ui/statusbar/BlameStatusWidget.java
-- 
+
+## Articles
+
+- ["Move faster, wait less: Improving code review time at Meta"](https://engineering.fb.com/2022/11/16/culture/meta-code-review-time-improving/)
