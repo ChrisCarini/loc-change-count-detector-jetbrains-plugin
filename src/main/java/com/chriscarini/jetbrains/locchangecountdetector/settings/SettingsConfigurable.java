@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 /**
@@ -53,12 +54,13 @@ public class SettingsConfigurable implements Configurable {
                 .addLabeledComponent(new JBLabel(Messages.message("loc.settings.configurable.label.icon.thresholds")), iconInfoTable, true)
                 .getPanel();
 
-        final JPanel panel = FormBuilder.createFormBuilder()
-                .addComponent(new CollapsiblePanel(infoTables, true, false, AllIcons.General.ArrowDown,
-                        AllIcons.General.ArrowRight, Messages.message("loc.settings.configurable.title.threshold.tables")))
-                .getPanel();
-
-        mainPanel.add(panel);
+        if (!GraphicsEnvironment.isHeadless()) {
+            final JPanel panel = FormBuilder.createFormBuilder()
+                    .addComponent(new CollapsiblePanel(infoTables, true, false, AllIcons.General.ArrowDown,
+                            AllIcons.General.ArrowRight, Messages.message("loc.settings.configurable.title.threshold.tables")))
+                    .getPanel();
+            mainPanel.add(panel);
+        }
     }
 
     private void buildChangeThresholdTimeInfoTable() {

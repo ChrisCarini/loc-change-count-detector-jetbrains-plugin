@@ -4,7 +4,6 @@ import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
 import com.intellij.ide.troubleshooting.CompositeGeneralTroubleInfoCollector;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.application.ex.ApplicationInfoEx;
-import com.intellij.openapi.application.impl.ApplicationInfoImpl;
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent;
 import com.intellij.openapi.diagnostic.SubmittedReportInfo;
@@ -43,7 +42,7 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
             IdeaLoggingEvent @NotNull [] events,
             @Nullable String additionalInfo,
             @NotNull Component parentComponent,
-            @SuppressWarnings("deprecation") @NotNull Consumer<? super SubmittedReportInfo> consumer
+            @NotNull Consumer<? super SubmittedReportInfo> consumer
     ) {
         try {
             final IdeaLoggingEvent event = events.length > 0 ? events[0] : null;
@@ -88,7 +87,7 @@ public class GitHubErrorReportSubmitter extends ErrorReportSubmitter {
     private String generateIssueSummary(@Nullable final String simpleErrorMessage, @NotNull final String stackTrace) {
         final String errorMessage = simpleErrorMessage == null || simpleErrorMessage.isEmpty() ? stackTrace.split("\n\t")[0] : simpleErrorMessage;
 
-        final ApplicationInfoImpl appInfo = (ApplicationInfoImpl) ApplicationInfoEx.getInstanceEx();
+        final ApplicationInfoEx appInfo = ApplicationInfoEx.getInstanceEx();
         final ApplicationNamesInfo applicationNamesInfo = ApplicationNamesInfo.getInstance();
         return String.format(GITHUB_ISSUE_SUMMARY_FORMAT, applicationNamesInfo.getProductName(), appInfo.getFullVersion(), errorMessage);
     }
