@@ -22,7 +22,7 @@ jobs:
           merge-method: SQUASH
           # NOTE: Can not set reviewer to self (`ChrisCarini`) because using PAT for self.
           #  From Docs:
-          #     Note that if you're using a Personal Access Token (PAT) as repo-token you cannot 
+          #     Note that if you're using a Personal Access Token (PAT) as repo-token you cannot
           #     request a review from the user that the PAT belongs to.
           #  Ref: https://github.com/gradle-update/update-gradle-wrapper-action#reviewers
           reviewers: |
