@@ -44,6 +44,7 @@ public class ChangeThresholdService implements Disposable {
         return project.getService(ChangeThresholdService.class);
     }
 
+    @SuppressWarnings("this-escape")
     public ChangeThresholdService(@NotNull final Project project) {
         this.project = project;
         changeThresholdTimeInfos(DEFAULT_CHANGE_THRESHOLD_INFO);
