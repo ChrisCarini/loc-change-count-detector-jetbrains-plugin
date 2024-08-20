@@ -50,6 +50,7 @@ public class LoCService implements Disposable {
         return project.getService(LoCService.class);
     }
 
+    @SuppressWarnings("this-escape")
     public LoCService(@NotNull final Project project) {
         this.project = project;
 
