@@ -174,6 +174,17 @@ public class LoCService implements Disposable {
             // Pull up the commit dialog...
             final CommonCheckinProjectAction f = new CommonCheckinProjectAction();
             f.actionPerformed(e);
+//            NOTE: THE BELOW IS A COPY OF THE ABOVE TO AVOID `./gradlew verifyPlugin` FROM FAILING FOR "1 override-only API usage violation". 
+//            WRITTEN & COMMENTED OUT ON 2024-11-14 AND SIMPLY JUST SETTING `OVERRIDE_ONLY_API_USAGES` FOR `verifyPlugin` TASK.  
+//            // The below was pulled from the underlying implementation of `CommonCheckinProjectAction.actionPerformed(e)` on 2024-11-14 to avoid
+//            // `./gradlew verifyPlugin` from failing for "1 override-only API usage violation".
+//            final List<FilePath> roots = Arrays.stream(ProjectLevelVcsManager.getInstance(myProject).getAllVcsRoots())
+//                .filter((it) -> it.getVcs() != null && it.getVcs().getCheckinEnvironment() != null)
+//                .map((it) -> getFilePath(it.getPath()))
+//                .collect(Collectors.toList());
+//            final LocalChangeList initialChangelist = CheckinActionUtil.INSTANCE.getInitiallySelectedChangeList(myProject, e);
+//  
+//            CheckinActionUtil.INSTANCE.performCommonCommitAction(e, myProject, initialChangelist, roots, ActionsBundle.message("action.CheckinProject.text"), null, false);
 
             final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
             if (callback != null) {
