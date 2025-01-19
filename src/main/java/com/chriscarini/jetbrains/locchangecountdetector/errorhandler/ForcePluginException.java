@@ -1,6 +1,7 @@
 package com.chriscarini.jetbrains.locchangecountdetector.errorhandler;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbAwareAction;
@@ -40,6 +41,11 @@ public class ForcePluginException extends DumbAwareAction {
     }
   }
 
+  @Override
+  public @NotNull ActionUpdateThread getActionUpdateThread() {
+    return ActionUpdateThread.BGT;
+  }
+  
   @Override
   public void update(@NotNull final AnActionEvent e) {
     super.update(e);

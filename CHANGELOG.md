@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Fixed `ForcePluginException` to have `getActionUpdateThread()` method, preventing plugin exception.
 
 ### Security
 
