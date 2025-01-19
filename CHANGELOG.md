@@ -8,6 +8,7 @@
 
 ### Changed
 - Upgrading IntelliJ from 2024.3.1.1 to 2024.3.2
+- Changed `LoCService.CreateCommitAction.actionPerformed()` to use underlying implementation of `CommonCheckinProjectAction.actionPerformed()` since it is marked as `@ApiStatus.OverrideOnly`. 
 
 ### Deprecated
 
