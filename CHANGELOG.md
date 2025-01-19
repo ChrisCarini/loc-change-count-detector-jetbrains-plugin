@@ -7,17 +7,25 @@
 ### Added
 
 ### Changed
-- Upgrading IntelliJ from 2024.3.1.1 to 2024.3.2
-- Changed `LoCService.CreateCommitAction.actionPerformed()` to use underlying implementation of `CommonCheckinProjectAction.actionPerformed()` since it is marked as `@ApiStatus.OverrideOnly`. 
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-- Fixed `ForcePluginException` to have `getActionUpdateThread()` method, preventing plugin exception.
 
 ### Security
+
+## [1.2.3] - 2025-01-19
+
+### Changed
+
+- Upgrading IntelliJ from 2024.3.1.1 to 2024.3.2
+- Changed `LoCService.CreateCommitAction.actionPerformed()` to use underlying implementation of `CommonCheckinProjectAction.actionPerformed()` since it is marked as `@ApiStatus.OverrideOnly`. 
+
+### Fixed
+
+- Fixed `ForcePluginException` to have `getActionUpdateThread()` method, preventing plugin exception.
 
 ## [1.2.2] - 2025-01-02
 
@@ -295,7 +303,8 @@
 - Initial Revision. Laying the foundation. It doesn't do much useful right now; this is not a released version, but
   might be one day.
 
-[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.2...HEAD
+[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.1.4...v1.2.0
