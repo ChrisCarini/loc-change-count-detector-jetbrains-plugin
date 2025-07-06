@@ -1,5 +1,8 @@
 # LoC Change Count Detector Notes
 
+- TODO(ChrisCarini) - Maybe use an extension point like https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html#declaring-extensions instead of having a service that's used to configure?
+  - https://plugins.jetbrains.com/docs/intellij/explore-api.html#extension-points-eps
+
 - https://plugins.jetbrains.com/intellij-platform-explorer/13173?extensions=com.intellij.vcsChangesViewRefresher
 - https://github.com/jetbrains/intellij-community/search?q=GitChangesViewRefresher
 - https://github.com/MCMicS/jenkins-control-plugin/blob/6a58a4089860b3d869d0030406e3a55c939b1d58/src/main/java/org/codinjutsu/tools/jenkins/view/vcs/WatchedJobsDecorator.java
