@@ -4,18 +4,11 @@
 
 ## [Unreleased]
 
-### Added
+## [3.0.2] - 2026-05-16
 
 ### Changed
+
 - Upgrading IntelliJ from 2026.1.1 to 2026.1.2
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [3.0.1] - 2026-04-24
 
@@ -433,69 +426,70 @@
 - Initial Revision. Laying the foundation. It doesn't do much useful right now; this is not a released version, but
   might be one day.
 
-[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v3.0.1...HEAD
-[3.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v3.0.0...v3.0.1
-[3.0.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.2.4...v3.0.0
-[2.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.2.3...v2.2.4
-[2.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.2.2...v2.2.3
-[2.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.2.1...v2.2.2
-[2.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.2.0...v2.2.1
-[2.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.1.5...v2.2.0
-[2.1.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.1.3...v2.1.5
-[2.1.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.1.2...v2.1.3
-[2.1.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.1.1...v2.1.2
-[2.1.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.1.0...v2.1.1
-[2.1.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.0.3...v2.1.0
-[2.0.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.0.2...v2.0.3
-[2.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.0.1...v2.0.2
-[2.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.8...v2.0.0
-[1.2.8]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.7...v1.2.8
-[1.2.7]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.6...v1.2.7
-[1.2.6]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.5...v1.2.6
-[1.2.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.4...v1.2.5
-[1.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.3...v1.2.4
-[1.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.2...v1.2.3
-[1.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.1...v1.2.2
-[1.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.2.0...v1.2.1
-[1.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.1.4...v1.2.0
-[1.1.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.1.3...v1.1.4
-[1.1.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.1.2...v1.1.3
-[1.1.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.1.1...v1.1.2
-[1.1.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.1.0...v1.1.1
-[1.1.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.0.5...v1.1.0
-[1.0.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.0.4...v1.0.5
-[1.0.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.0.3...v1.0.4
-[1.0.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.0.2...v1.0.3
-[1.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.0.1...v1.0.2
-[1.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.6...v1.0.0
-[0.4.6]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.5...v0.4.6
-[0.4.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.4...v0.4.5
-[0.4.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.3...v0.4.4
-[0.4.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.2...v0.4.3
-[0.4.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.1...v0.4.2
-[0.4.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.5...v0.4.0
-[0.3.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.4...v0.3.5
-[0.3.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.3...v0.3.4
-[0.3.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.2...v0.3.3
-[0.3.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.1...v0.3.2
-[0.3.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.3.0...v0.3.1
-[0.3.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.5...v0.3.0
-[0.2.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.4...v0.2.5
-[0.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.3...v0.2.4
-[0.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.2...v0.2.3
-[0.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.1...v0.2.2
-[0.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.1.3...v0.2.0
-[0.1.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.1.2...v0.1.3
-[0.1.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.0.6...v0.1.0
-[0.0.6]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.0.5...v0.0.6
-[0.0.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.0.4...v0.0.5
-[0.0.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.0.3...v0.0.4
-[0.0.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.0.2...v0.0.3
-[0.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/commits/v0.0.1
+[Unreleased]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/3.0.2...HEAD
+[3.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/3.0.1...3.0.2
+[3.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.2.4...3.0.0
+[2.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.2.3...2.2.4
+[2.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.2.2...2.2.3
+[2.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.2.1...2.2.2
+[2.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.1.5...2.2.0
+[2.1.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.1.3...2.1.5
+[2.1.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.1.2...2.1.3
+[2.1.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.1.1...2.1.2
+[2.1.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.0.3...2.1.0
+[2.0.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.0.2...2.0.3
+[2.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.8...2.0.0
+[1.2.8]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.7...1.2.8
+[1.2.7]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.6...1.2.7
+[1.2.6]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.5...1.2.6
+[1.2.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.4...1.2.5
+[1.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.3...1.2.4
+[1.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.2...1.2.3
+[1.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.1...1.2.2
+[1.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.2.0...1.2.1
+[1.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.1.4...1.2.0
+[1.1.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.1.3...1.1.4
+[1.1.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.1.2...1.1.3
+[1.1.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.0.5...1.1.0
+[1.0.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.0.4...1.0.5
+[1.0.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.0.3...1.0.4
+[1.0.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.0.2...1.0.3
+[1.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.6...1.0.0
+[0.4.6]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.5...0.4.6
+[0.4.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.4...0.4.5
+[0.4.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.3...0.4.4
+[0.4.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.2...0.4.3
+[0.4.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.1...0.4.2
+[0.4.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.4.0...0.4.1
+[0.4.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.3.5...0.4.0
+[0.3.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.3.4...0.3.5
+[0.3.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.3.3...0.3.4
+[0.3.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.3.2...0.3.3
+[0.3.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.3.1...0.3.2
+[0.3.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.3.0...0.3.1
+[0.3.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.2.5...0.3.0
+[0.2.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.2.4...0.2.5
+[0.2.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.2.3...0.2.4
+[0.2.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.2.2...0.2.3
+[0.2.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.2.1...0.2.2
+[0.2.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.2.0...0.2.1
+[0.2.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.1.3...0.2.0
+[0.1.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.1.2...0.1.3
+[0.1.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.1.1...0.1.2
+[0.1.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.1.0...0.1.1
+[0.1.0]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.0.6...0.1.0
+[0.0.6]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.0.5...0.0.6
+[0.0.5]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.0.4...0.0.5
+[0.0.4]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.0.3...0.0.4
+[0.0.3]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.0.2...0.0.3
+[0.0.2]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/compare/0.0.1...0.0.2
+[0.0.1]: https://github.com/ChrisCarini/loc-change-count-detector-jetbrains-plugin/commits/0.0.1
