@@ -196,7 +196,7 @@ public class LoCService implements Disposable {
                     myProject,
                     initialChangelist,
                     roots,
-                    Messages.message("loc.count.widget.text.create.commit.action.text"),
+                    Messages.message("loc.count.widget.text.commit.action.text"),
                     null,
                     false
             );
