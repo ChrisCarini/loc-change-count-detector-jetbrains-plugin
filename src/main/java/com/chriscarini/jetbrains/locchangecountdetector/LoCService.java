@@ -4,7 +4,6 @@ import com.chriscarini.jetbrains.locchangecountdetector.data.ChangeInfo;
 import com.chriscarini.jetbrains.locchangecountdetector.factory.LOCBaseWidgetFactory;
 import com.chriscarini.jetbrains.locchangecountdetector.git.GitNumStat;
 import com.chriscarini.jetbrains.locchangecountdetector.messages.Messages;
-import com.intellij.idea.ActionsBundle;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
@@ -192,7 +191,15 @@ public class LoCService implements Disposable {
                 .collect(Collectors.toList());
             final LocalChangeList initialChangelist = CheckinActionUtil.INSTANCE.getInitiallySelectedChangeList(myProject, e);
 
-            CheckinActionUtil.INSTANCE.performCommonCommitAction(e, myProject, initialChangelist, roots, ActionsBundle.message("action.CheckinProject.text"), null, false);
+            CheckinActionUtil.INSTANCE.performCommonCommitAction(
+                    e,
+                    myProject,
+                    initialChangelist,
+                    roots,
+                    Messages.message("loc.count.widget.text.commit.action.text"),
+                    null,
+                    false
+            );
 
             final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
             if (callback != null) {
