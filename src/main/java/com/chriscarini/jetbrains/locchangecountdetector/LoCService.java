@@ -8,8 +8,10 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -19,19 +21,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.vcs.FilePath;
-import com.intellij.openapi.vcs.ProjectLevelVcsManager;
-import com.intellij.openapi.vcs.actions.commit.CheckinActionUtil;
-import com.intellij.openapi.vcs.changes.LocalChangeList;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.util.ui.update.MergingUpdateQueue;
 import com.intellij.util.ui.update.Update;
-import com.intellij.vcsUtil.VcsUtil;
 import git4idea.commands.GitCommand;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -177,29 +172,12 @@ public class LoCService implements Disposable {
 
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
-//            // Pull up the commit dialog...
-//            final CommonCheckinProjectAction f = new CommonCheckinProjectAction();
-//            f.actionPerformed(e);
-//            NOTE: THE ABOVE IS A SHORTHAND OF THE BELOW, BUT ABOVE CAUSES `./gradlew verifyPlugin` TO FAIL FOR "1 override-only API usage violation". 
-//            ~WRITTEN & COMMENTED OUT ON 2024-11-14 AND SIMPLY JUST SETTING `OVERRIDE_ONLY_API_USAGES` FOR `verifyPlugin` TASK.~  
-//            ABOVE WAS COMMENTED OUT ON 2025-01-19 SINCE THE PLUGIN COULD NO LONGER PASS `verifyPlugin` (`OVERRIDE_ONLY_API_USAGES`) TASK.  
-            // The below was pulled from the underlying implementation of `CommonCheckinProjectAction.actionPerformed(e)` on 2024-11-14 to avoid
-            // `./gradlew verifyPlugin` from failing for "1 override-only API usage violation".
-            final List<FilePath> roots = Arrays.stream(ProjectLevelVcsManager.getInstance(myProject).getAllVcsRoots())
-                .filter((it) -> it.getVcs() != null && it.getVcs().getCheckinEnvironment() != null)
-                .map((it) -> VcsUtil.getFilePath(it.getPath()))
-                .collect(Collectors.toList());
-            final LocalChangeList initialChangelist = CheckinActionUtil.INSTANCE.getInitiallySelectedChangeList(myProject, e);
-
-            CheckinActionUtil.INSTANCE.performCommonCommitAction(
-                    e,
-                    myProject,
-                    initialChangelist,
-                    roots,
-                    Messages.message("loc.count.widget.text.commit.action.text"),
-                    null,
-                    false
-            );
+            final AnAction checkinProjectAction = ActionManager.getInstance().getAction("CheckinProject");
+            if (checkinProjectAction == null) {
+                LOG.warn("Unable to find the 'CheckinProject' action.");
+                return;
+            }
+            ActionUtil.performAction(checkinProjectAction, e);
 
             final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
             if (callback != null) {
