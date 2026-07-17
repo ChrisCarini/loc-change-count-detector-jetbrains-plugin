@@ -11,6 +11,7 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -176,7 +177,7 @@ public class LoCService implements Disposable {
                 LOG.warn("Unable to find the 'CheckinProject' action.");
                 return;
             }
-            ActionManager.getInstance().tryToExecute(checkinProjectAction, e.getInputEvent(), null, e.getPlace(), true);
+            ActionUtil.performAction(checkinProjectAction, e);
 
             final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
             if (callback != null) {
