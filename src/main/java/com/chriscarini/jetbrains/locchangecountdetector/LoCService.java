@@ -176,7 +176,7 @@ public class LoCService implements Disposable {
                 LOG.warn("Unable to find the 'CheckinProject' action.");
                 return;
             }
-            checkinProjectAction.actionPerformed(e);
+            ActionManager.getInstance().tryToExecute(checkinProjectAction, e.getInputEvent(), null, e.getPlace(), true);
 
             final Consumer<ChangeInfo> callback = ChangeThresholdService.getInstance(myProject).getCreateCommitActionCallback();
             if (callback != null) {
